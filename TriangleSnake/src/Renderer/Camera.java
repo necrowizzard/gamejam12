@@ -16,6 +16,10 @@ public class Camera {
 		
 	}
 	
+	public float[] getPos() {
+		return pos;
+	}
+	
 	//increment the camera's current yaw rotation
 	public void yaw(float amount) {
 	    //increment the yaw by the amount param
