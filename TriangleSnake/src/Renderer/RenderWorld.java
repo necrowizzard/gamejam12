@@ -1,8 +1,5 @@
 package Renderer;
 
-import java.nio.FloatBuffer;
-
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
@@ -10,8 +7,11 @@ import org.lwjgl.util.glu.GLU;
 public class RenderWorld {
 
 	private Textures textures;
+	private Triangles triangles;
 	
 	public RenderWorld() {
+		
+		triangles = new Triangles();
 		
 		textures = new Textures();
 		//debug!
@@ -56,6 +56,10 @@ public class RenderWorld {
 		
 	}
 	
+	public void update(float dt) {
+		triangles.update(dt);
+	}
+	
 	public void draw() {
 		
 		int err = GL11.glGetError();
@@ -71,7 +75,7 @@ public class RenderWorld {
 		
 		//------- LIGHTING -------
 		
-		GL11.glEnable(GL11.GL_LIGHTING);
+		/*GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_LIGHT0);
 		GL11.glEnable(GL11.GL_COLOR_MATERIAL); //light and color
 		GL11.glColorMaterial(GL11.GL_FRONT, GL11.GL_AMBIENT_AND_DIFFUSE);
@@ -81,7 +85,7 @@ public class RenderWorld {
 		FloatBuffer light_position = BufferUtils.createFloatBuffer(4);
 		light_position.put(new float[]{-0.5f, 2.0f, 0.2f, 0.0f});
 		light_position.position(0);
-		GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, light_position);
+		GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, light_position);*/
 		
 		//-------LIGHTING END-------
 		
@@ -126,6 +130,8 @@ public class RenderWorld {
 		
 		GL11.glPushMatrix();
 		GL11.glColor3f(1.0f, 0.0f, 0.0f);
+		
+		triangles.draw();
 		
 		//GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 		//GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);

@@ -3,6 +3,7 @@ import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
 import GUI.MouseGUI;
@@ -23,7 +24,7 @@ public class Game {
     float dy        = 0.0f;
     float dt        = 0.0f; //length of frame
     float lastTime  = 0.0f; // when the last frame was
-    float time      = 0.0f;
+    double time      = 0.0f;
 	float mouseSensitivity = 0.08f;
     float movementSpeed = 10.0f; //move 10 units per second
     
@@ -38,7 +39,7 @@ public class Game {
 		mouseGUI = new MouseGUI();
 		
 		renderer = new RenderWorld();
-		camera = new Camera(0, 0, 0);
+		camera = new Camera(0, 0, -5);
 		
 		//System.out.println("Blaaaaaa: " + level.debug_get_texture()[1]);
 	}
@@ -47,6 +48,7 @@ public class Game {
 		Display.setTitle("Perlin Noise");
 		try {
 			Display.setFullscreen(false);
+			Display.setDisplayMode(new DisplayMode(800,600));
 			Display.create();
 		} catch (LWJGLException e) {
 			e.printStackTrace();
@@ -61,9 +63,9 @@ public class Game {
 		while(running && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			
 			time = Sys.getTime();
-	        dt = (time - lastTime)/1000.0f;
-	        lastTime = time;
-	 
+	        dt = ((float)time - lastTime)/1000.0f;
+	        lastTime = (float)time;
+	        
 	        //INPUT
 	        if (Mouse.isButtonDown(1)) {
 		        //distance in mouse movement from the last getDX() call.
@@ -71,13 +73,18 @@ public class Game {
 		        //distance in mouse movement from the last getDY() call.
 		        dy = Mouse.getDY();
 		 
+		        //System.out.println(dx +"/"+ dy);
+		        
 		        //controll camera yaw from x movement fromt the mouse
 		        camera.yaw(dx * mouseSensitivity);
 		        //controll camera pitch from y movement fromt the mouse
 		        camera.pitch(- dy * mouseSensitivity); 
 	        }
 			
+	        //System.out.println(dt);
+	        
 			if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+				//System.out.println(dt);
 	            camera.walkForward(movementSpeed*dt);
 	        }
 	        if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
@@ -120,6 +127,8 @@ public class Game {
 				GL11.glLoadIdentity();
 				
 				camera.apply_camera_transform();
+				
+				renderer.update(dt, camera);
 				
 				renderer.draw();
 				

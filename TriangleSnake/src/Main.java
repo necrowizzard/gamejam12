@@ -1,7 +1,3 @@
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
 
 
 public class Main {
