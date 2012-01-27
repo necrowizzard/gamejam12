@@ -18,7 +18,7 @@ public class Triangles {
 		
 	}
 	
-	public void update(float dt) {
+	public void update(float dt, Camera camera) {
 		
 		time += dt;
 		

@@ -56,8 +56,8 @@ public class RenderWorld {
 		
 	}
 	
-	public void update(float dt) {
-		triangles.update(dt);
+	public void update(float dt, Camera camera) {
+		triangles.update(dt, camera);
 	}
 	
 	public void draw() {
