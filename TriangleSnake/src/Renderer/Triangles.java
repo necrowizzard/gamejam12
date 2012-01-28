@@ -2,6 +2,7 @@ package Renderer;
 
 import java.util.ArrayList;
 
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
 public class Triangles {
@@ -50,18 +51,22 @@ public class Triangles {
 			
 			//System.out.println("added triangle: " + pos[0] +"/"+ pos[1] +"/"+ pos[2]);
 			
+			float s = 0;
 			if (obj_list.size() < LIMIT)
 				obj_list.add(new GameObject(
-						pos.x - camera.forward.x * GameObject.scale,
-						pos.y - camera.forward.y * GameObject.scale,
-						pos.z - camera.forward.z * GameObject.scale, camera));
+						pos.x - camera.forward.x * s,
+						pos.y - camera.forward.y * s,
+						pos.z - camera.forward.z * s, camera));
 			else {
 				//Limit size
 				if (counter > LIMIT) {
 					System.out.println("start new fill");
 					counter = 0;
 				}
-				obj_list.add(counter, new GameObject(pos.x, pos.y, pos.z + 1.0f, camera));
+				obj_list.add(new GameObject(
+						pos.x - camera.forward.x * s,
+						pos.y - camera.forward.y * s,
+						pos.z - camera.forward.z * s, camera));
 				
 				counter++;
 			}
@@ -74,15 +79,22 @@ public class Triangles {
 		}
 	}
 	
-	public void draw() {
+	public void draw(Camera player) {
 		int s = Camera.size;
-		for (int i=0; i<obj_list.size(); i++) {
 			
-			for (int y = -2; y <= 2; y++) {
-				for (int x = -2; x <= 2; x++) {
-					for (int z = -2; z <= 2; z++) {
+		for (int y = -2; y <= 2; y++) {
+			for (int x = -2; x <= 2; x++) {
+				for (int z = -2; z <= 2; z++) {
+					for (int i=0; i<obj_list.size(); i++) {
 						obj_list.get(i).draw_offset(s * x, s * y, s * z);
 					}
+					// test: draw player
+					GL11.glPushMatrix();
+					GL11.glTranslatef(s * x, s * y, s * z);
+					player.apply_player_transform();
+					GL11.glScalef(0.3f, 0.3f, 0.3f);
+					RenderWorld.drawBox();
+					GL11.glPopMatrix();
 				}
 			}
 			

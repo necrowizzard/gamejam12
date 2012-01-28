@@ -10,6 +10,7 @@ public class GameObject {
 	private Vector3f up;
 	private Vector3f right;
 	static final float scale = 5;
+	private float current_scale;
 	
 	// axis aligned bounding box
 	private Vector3f aabb1, aabb2;
@@ -17,9 +18,8 @@ public class GameObject {
 	public GameObject(float x, float y, float z, Camera cam) {
 		aabb1 = new Vector3f();
 		aabb2 = new Vector3f();
+		current_scale = 1;
 		setPos(x, y, z, cam);
-		
-		
 	}
 	
 	public void rotate_90_y() {
@@ -41,14 +41,19 @@ public class GameObject {
 		this.right = new Vector3f(cam.right);
 		this.up = new Vector3f(cam.up);
 		this.forward = new Vector3f(cam.forward);
-		this.right.scale(scale);
-		this.up.scale(scale);
-		this.forward.scale(scale);
+		//this.right.scale(scale);
+		//this.up.scale(scale);
+		//this.forward.scale(scale);
 		//update_bounding_box();
 	}
 
 	public void update() {
-		//scale += 0.001f;
+		if (current_scale < scale) {
+			current_scale *= 1.01f;
+			this.right.scale(1.01f);
+			this.up.scale(1.01f);
+			this.forward.scale(1.01f);
+		}
 		
 		//System.out.println("update");
 	}
@@ -150,6 +155,7 @@ public class GameObject {
 	}
 	
 	private boolean collide(Vector3f center, float radius, float r, float u) {
+		if (current_scale < scale) return false;
 		float dx = center.x - (x + right.x * r + up.x * u);
 		float dy = center.y - (y + right.y * r + up.y * u);
 		float dz = center.z - (z + right.z * r + up.z * u);

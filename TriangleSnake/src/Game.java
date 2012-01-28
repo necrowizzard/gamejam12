@@ -33,7 +33,7 @@ public class Game {
     double time      = 0.0f;
 	float mouseSensitivity = 0.08f;
     float movementSpeed = 10.0f; //move 10 units per second
-    float rotationSpeed = 200.0f;
+    float rotationSpeed = 150.0f;
     double game_over_timer;
     
     boolean was_pressed = false;
@@ -257,8 +257,10 @@ public class Game {
 			        camera2.walkForward(movementSpeed*dt);
 				}
 				
-				renderer.update(dt, camera1, 0);
-				renderer.update(dt, camera2, 1);
+				if (started) {
+					renderer.update(dt, camera1, 0);
+					renderer.update(dt, camera2, 1);
+				}
 				
 				GL11.glLoadIdentity();
 				

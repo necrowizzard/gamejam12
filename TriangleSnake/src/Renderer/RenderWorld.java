@@ -127,7 +127,7 @@ public class RenderWorld {
 		textures.add_Texture(texture, 640, 640, 1);
 	}
 	
-	public void drawBox() {
+	public static void drawBox() {
 		
 		int[][] faces = { 	{0, 1, 2, 3}, {3, 2, 6, 7}, {7, 6, 5, 4},
 							{4, 5, 1, 0}, {5, 6, 2, 1}, {7, 4, 0, 3} };
@@ -302,15 +302,8 @@ public class RenderWorld {
 		triangle.setValue1f(triangle_ind_color, 0.0f);
 		triangle.setValue1i(triangle_ind_texture, 0);
 		
-		triangles1.draw();
-		
-		// test: draw player
-		GL11.glPushMatrix();
-		if (camera.who == 0) camera.apply_player_transform();
-		else enemy_cam.apply_player_transform();
-		GL11.glScalef(0.3f, 0.3f, 0.3f);
-		drawBox();
-		GL11.glPopMatrix();
+		if (camera.who == 0) triangles1.draw(camera);
+		else triangles1.draw(enemy_cam);
 		
 		//if (view == 0)
 		//	GL11.glColor3f(0.0f, 1.0f, 0.0f);
@@ -319,15 +312,8 @@ public class RenderWorld {
 		
 		triangle.setValue1f(triangle_ind_color, 1.0f); //DIFFERENT COLOR
 		
-		triangles2.draw();
-		
-		// test: draw player
-		GL11.glPushMatrix();
-		if (camera.who == 1) camera.apply_player_transform();
-		else enemy_cam.apply_player_transform();
-		GL11.glScalef(0.3f, 0.3f, 0.3f);
-		drawBox();
-		GL11.glPopMatrix();
+		if (camera.who == 0) triangles2.draw(enemy_cam);
+		else triangles2.draw(camera);
 				
 		triangle.unbind();
 		
