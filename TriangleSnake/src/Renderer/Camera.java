@@ -4,6 +4,8 @@ import org.lwjgl.opengl.GL11;
 
 public class Camera {
 
+	public static final int size = 60;
+	
 	float[] pos;
 	float pitch;
 	float yaw;
@@ -36,26 +38,36 @@ public class Camera {
 	public void walkForward(float distance) {
 		pos[0] -= distance * (float)Math.sin(Math.toRadians(yaw));
 		pos[2] += distance * (float)Math.cos(Math.toRadians(yaw));
+		
+		check_outside_area();
 	}
 	 
 	//moves the camera backward relative to its current rotation (yaw)
 	public void walkBackwards(float distance) {
 		pos[0] += distance * (float)Math.sin(Math.toRadians(yaw));
 		pos[2] -= distance * (float)Math.cos(Math.toRadians(yaw));
+		
+		check_outside_area();
 	}
 	
 	public void jump(float distance) {
 		pos[1] -= distance;
+		
+		check_outside_area();
 	}
 	
 	public void move_down(float distance) {
 		pos[1] += distance;
+		
+		check_outside_area();
 	}
 	 
 	//strafes the camera left relitive to its current rotation (yaw)
 	public void strafeLeft(float distance) {
 		pos[0] -= distance * (float)Math.sin(Math.toRadians(yaw-90));
 		pos[2] += distance * (float)Math.cos(Math.toRadians(yaw-90));
+		
+		check_outside_area();
 	}
 	 
 	//strafes the camera right relitive to its current rotation (yaw)
@@ -63,6 +75,8 @@ public class Camera {
 	{
 		pos[0] -= distance * (float)Math.sin(Math.toRadians(yaw+90));
 		pos[2] += distance * (float)Math.cos(Math.toRadians(yaw+90));
+		
+		check_outside_area();
 	}
 	
 	public void apply_camera_transform() {
@@ -74,6 +88,29 @@ public class Camera {
         //translate to the position vector's location
         GL11.glTranslatef(pos[0], pos[1], pos[2]);
 		
+	}
+	
+	private void check_outside_area() {
+		if (pos[0] > size/2) {
+			pos[0] = -size + pos[0];
+		}
+		if (pos[0] < -size/2) {
+			pos[0] = size - pos[0];
+		}
+		
+		if (pos[1] > size/2) {
+			pos[1] = -size + pos[1];
+		}
+		if (pos[1] < -size/2) {
+			pos[1] = size - pos[1];
+		}
+		
+		if (pos[2] > size/2) {
+			pos[2] = -size + pos[2];
+		}
+		if (pos[2] < -size/2) {
+			pos[2] = size - pos[2];
+		}
 	}
 	
 }

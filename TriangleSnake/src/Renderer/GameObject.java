@@ -13,7 +13,7 @@ public class GameObject {
 		this.y = y;
 		this.z = z;
 		
-		scale = 1.0f;
+		scale = 2.0f;
 	}
 	
 	public void setPos(float x, float y, float z) {
@@ -23,20 +23,65 @@ public class GameObject {
 	}
 	
 	public void update() {
-		//scale += 0.0001f;
+		//scale += 0.001f;
 		
 		//System.out.println("update");
 	}
 	
 	public void draw() {
 		
+		GL11.glPushMatrix();
+		
+		GL11.glTranslatef(x, y, z);
 		GL11.glScalef(scale, scale, scale);
 		
-		GL11.glBegin(GL11.GL_TRIANGLES);
+		/*GL11.glBegin(GL11.GL_TRIANGLES);
 			GL11.glVertex3f( 0.0f, 1.0f, -0.5f);
 			GL11.glVertex3f(-1.0f,-1.0f, -0.5f);
 			GL11.glVertex3f( 1.0f,-1.0f, -0.5f);
+		GL11.glEnd();*/
+		
+		GL11.glBegin(GL11.GL_QUADS);
+			GL11.glTexCoord2f(0.0f, 1.0f);
+			GL11.glVertex3f(-1.0f, 1.0f, 0.0f);
+			GL11.glTexCoord2f(0.0f, 0.0f);
+			GL11.glVertex3f(-1.0f,-1.0f, 0.0f);
+			GL11.glTexCoord2f(1.0f, 0.0f);
+			GL11.glVertex3f( 1.0f,-1.0f, 0.0f);
+			GL11.glTexCoord2f(1.0f, 1.0f);
+			GL11.glVertex3f( 1.0f,1.0f, 0.0f);
 		GL11.glEnd();
+		
+		GL11.glPopMatrix();
+	}
+	
+	public void draw_offset(int ox, int oy, int oz) {
+		
+		GL11.glPushMatrix();
+		
+		GL11.glTranslatef(ox, oy, oz);
+		
+		GL11.glTranslatef(x, y, z);
+		GL11.glScalef(scale, scale, scale);
+		
+		/*GL11.glBegin(GL11.GL_TRIANGLES);
+			GL11.glVertex3f( 0.0f, 1.0f, -0.5f);
+			GL11.glVertex3f(-1.0f,-1.0f, -0.5f);
+			GL11.glVertex3f( 1.0f,-1.0f, -0.5f);
+		GL11.glEnd();*/
+		
+		GL11.glBegin(GL11.GL_QUADS);
+			GL11.glTexCoord2f(0.0f, 1.0f);
+			GL11.glVertex3f(-1.0f, 1.0f, 0.0f);
+			GL11.glTexCoord2f(0.0f, 0.0f);
+			GL11.glVertex3f(-1.0f,-1.0f, 0.0f);
+			GL11.glTexCoord2f(1.0f, 0.0f);
+			GL11.glVertex3f( 1.0f,-1.0f, 0.0f);
+			GL11.glTexCoord2f(1.0f, 1.0f);
+			GL11.glVertex3f( 1.0f,1.0f, 0.0f);
+		GL11.glEnd();
+		
+		GL11.glPopMatrix();
 		
 	}
 	

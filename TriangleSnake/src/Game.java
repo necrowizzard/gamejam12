@@ -8,18 +8,20 @@ import org.lwjgl.opengl.GL11;
 
 import GUI.MouseGUI;
 import Renderer.Camera;
+import Renderer.FBO;
 import Renderer.RenderWorld;
+import Renderer.Shader;
 
 
 public class Game {
-
+	
 	boolean running;
 	
 	MouseGUI mouseGUI;
 	
 	private RenderWorld renderer;
 	
-	private Camera camera;
+	private Camera camera1, camera2;
 	float dx        = 0.0f;
     float dy        = 0.0f;
     float dt        = 0.0f; //length of frame
@@ -27,9 +29,16 @@ public class Game {
     double time      = 0.0f;
 	float mouseSensitivity = 0.08f;
     float movementSpeed = 10.0f; //move 10 units per second
+    float rotationSpeed = 200.0f;
     
     boolean was_pressed = false;
+    
+    boolean started = false;
 	
+    //VERY UGLY: not time!!!
+	private Shader post;
+	private FBO framebuffer;
+    
 	public Game() {
 		
 		running = true;
@@ -39,7 +48,11 @@ public class Game {
 		mouseGUI = new MouseGUI();
 		
 		renderer = new RenderWorld();
-		camera = new Camera(0, 0, -5);
+		camera1 = new Camera(0, 0, -5);
+		
+		camera2 = new Camera(0, 0, 5);
+		
+		framebuffer = new FBO(RenderWorld.SIZEX, RenderWorld.SIZEY);
 		
 		//System.out.println("Blaaaaaa: " + level.debug_get_texture()[1]);
 	}
@@ -48,7 +61,7 @@ public class Game {
 		Display.setTitle("Perlin Noise");
 		try {
 			Display.setFullscreen(false);
-			Display.setDisplayMode(new DisplayMode(800,600));
+			Display.setDisplayMode(new DisplayMode(RenderWorld.SIZEX,RenderWorld.SIZEY));
 			Display.create();
 		} catch (LWJGLException e) {
 			e.printStackTrace();
@@ -76,31 +89,66 @@ public class Game {
 		        //System.out.println(dx +"/"+ dy);
 		        
 		        //controll camera yaw from x movement fromt the mouse
-		        camera.yaw(dx * mouseSensitivity);
+		        camera1.yaw(dx * mouseSensitivity);
 		        //controll camera pitch from y movement fromt the mouse
-		        camera.pitch(- dy * mouseSensitivity); 
+		        camera1.pitch(- dy * mouseSensitivity); 
 	        }
 			
 	        //System.out.println(dt);
 	        
+	        /*
+	         * idea:
+	         * 
+	         * wasd
+	         * 
+	         * up,left,down,right
+	         * 
+	         * and combinations for moving in all directions of the screen...
+	         */
+	        
 			if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+				
+				if (!started) started = true;
 				//System.out.println(dt);
-	            camera.walkForward(movementSpeed*dt);
+				camera1.walkForward(movementSpeed*dt);
 	        }
 	        if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-	            camera.walkBackwards(movementSpeed*dt);
+	        	camera1.walkBackwards(movementSpeed*dt);
 	        }
 	        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-	            camera.strafeLeft(movementSpeed*dt);
+	        	camera1.strafeLeft(movementSpeed*dt);
 	        }
 	        if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-	            camera.strafeRight(movementSpeed*dt);
+	        	camera1.strafeRight(movementSpeed*dt);
 	        }
+	        
+	        if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+	        	
+	        	if (!started) started = true;
+				//System.out.println(dt);
+				//camera2.walkForward(movementSpeed*dt);
+				
+				camera2.pitch(-rotationSpeed*dt);
+	        }
+	        if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
+	        	//camera2.walkBackwards(movementSpeed*dt);
+	        	
+	        	camera2.pitch(rotationSpeed*dt);
+	        }
+	        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
+	        	//camera2.strafeLeft(movementSpeed*dt);
+	        	camera2.yaw(-rotationSpeed*dt);
+	        }
+	        if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
+	        	//camera2.strafeRight(movementSpeed*dt);
+	        	camera2.yaw(rotationSpeed*dt);
+	        }
+	        
 	        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-	            camera.jump(movementSpeed*dt);
+	        	camera1.jump(movementSpeed*dt);
 	        }
 	        if (Keyboard.isKeyDown(Keyboard.KEY_X)) {
-	            camera.move_down(movementSpeed*dt);
+	        	camera1.move_down(movementSpeed*dt);
 	        }
 	        if (Keyboard.isKeyDown(Keyboard.KEY_BACK)) {
 	            //delete
@@ -124,20 +172,85 @@ public class Game {
 				running = false;
 			} else {
 				
+				if (started) {
+					camera1.walkForward(movementSpeed*dt);
+			        camera2.walkForward(movementSpeed*dt);
+				}
+				
+				renderer.update(dt, camera1, 0);
+				renderer.update(dt, camera2, 1);
+				
 				GL11.glLoadIdentity();
 				
-				camera.apply_camera_transform();
+				framebuffer.bind(0);
 				
-				renderer.update(dt, camera);
+				camera1.apply_camera_transform();
 				
-				renderer.draw();
+				renderer.draw(0, camera1);
 				
+				GL11.glLoadIdentity();
+				
+				camera2.apply_camera_transform();
+				
+				renderer.draw(1, camera2);
+				
+				final_pass();
 			}
 			
 		}
 		
 		Display.destroy();
 		
+	}
+	
+	private void final_pass () {
+		framebuffer.unbind();
+		
+		//DRAW TO FBO
+		
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
+		GL11.glPushMatrix();
+		
+		framebuffer.bind_texture(0);
+		
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
+		GL11.glLoadIdentity(); // not a huge problem
+
+		GL11.glOrtho(-1.0, 1.0, -1.0, 1.0, 1.0, 40.0);
+
+		GL11.glMatrixMode(GL11.GL_MODELVIEW);
+		GL11.glLoadIdentity();
+
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT
+				| GL11.GL_STENCIL_BUFFER_BIT);
+
+		// draw view plane
+		GL11.glColor3f(1.0f, 1.0f, 1.0f);
+		GL11.glBegin(GL11.GL_QUADS);
+
+		GL11.glTexCoord2f(0.0f, 1.0f);
+		GL11.glVertex3f(-1.0f, 1.0f, -1.0f);
+
+		GL11.glTexCoord2f(0.0f, 0.0f);
+		GL11.glVertex3f(-1.0f, -1.0f, -1.0f);
+
+		GL11.glTexCoord2f(1.0f, 0.0f);
+		GL11.glVertex3f(1.0f, -1.0f, -1.0f);
+
+		GL11.glTexCoord2f(1.0f, 1.0f);
+		GL11.glVertex3f(1.0f, 1.0f, -1.0f);
+
+		GL11.glEnd();
+		
+		framebuffer.unbind_texture();
+		
+		//GL11.glPopMatrix();
+		
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
+		GL11.glPopMatrix();
+		GL11.glMatrixMode(GL11.GL_MODELVIEW);
+		
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 	}
 	
 	public void stop() {
