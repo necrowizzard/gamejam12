@@ -26,7 +26,7 @@ public class Game {
 	float dx        = 0.0f;
     float dy        = 0.0f;
     float dt        = 0.0f; //length of frame
-    float lastTime  = 0.0f; // when the last frame was
+    double lastTime  = 0.0f; // when the last frame was
     double time      = 0.0f;
 	float mouseSensitivity = 0.08f;
     float movementSpeed = 10.0f; //move 10 units per second
@@ -83,8 +83,8 @@ public class Game {
 		while(running && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			
 			time = Sys.getTime();
-	        dt = ((float)time - lastTime)/1000.0f;
-	        lastTime = (float)time;
+	        dt = (float)(time - lastTime)/1000.0f;
+	        lastTime = time;
 	        
 	        //INPUT
 	        if (Mouse.isButtonDown(1)) {
