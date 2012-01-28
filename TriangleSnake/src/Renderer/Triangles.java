@@ -2,6 +2,8 @@ package Renderer;
 
 import java.util.ArrayList;
 
+import org.lwjgl.util.vector.Vector3f;
+
 public class Triangles {
 
 	public static final int LIMIT = 1000;
@@ -32,20 +34,19 @@ public class Triangles {
 		time += dt;
 		
 		if (time > TIMETOADD) {
-			float [] pos = camera.getPos();
+			Vector3f pos = camera.getPos();
 			
 			//System.out.println("added triangle: " + pos[0] +"/"+ pos[1] +"/"+ pos[2]);
 			
-			//TODO: WHY INVERTED?
 			if (obj_list.size() < LIMIT)
-				obj_list.add(new GameObject(-pos[0], -pos[1], -pos[2] + 1.0f));
+				obj_list.add(new GameObject(pos.x, pos.y, pos.z + 1.0f));
 			else {
 				//Limit size
 				if (counter > LIMIT) {
 					System.out.println("start new fill");
 					counter = 0;
 				}
-				obj_list.add(counter, new GameObject(-pos[0], -pos[1], -pos[2] + 1.0f));
+				obj_list.add(counter, new GameObject(pos.x, pos.y, pos.z + 1.0f));
 				
 				counter++;
 			}

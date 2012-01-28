@@ -96,9 +96,9 @@ public class Game {
 		        //System.out.println(dx +"/"+ dy);
 		        
 		        //controll camera yaw from x movement fromt the mouse
-		        camera1.yaw(dx * mouseSensitivity);
+		        camera1.yaw(-dx * mouseSensitivity);
 		        //controll camera pitch from y movement fromt the mouse
-		        camera1.pitch(- dy * mouseSensitivity); 
+		        camera1.pitch(+dy * mouseSensitivity); 
 	        }
 			
 	        //System.out.println(dt);
@@ -115,12 +115,12 @@ public class Game {
 	        
 			if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
 				
-				if (!started) started = true;
+				//if (!started) started = true;
 				//System.out.println(dt);
-				camera1.walkForward(movementSpeed*dt);
+				camera1.jump(movementSpeed*dt);
 	        }
 	        if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-	        	camera1.walkBackwards(movementSpeed*dt);
+	        	camera1.move_down(movementSpeed*dt);
 	        }
 	        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
 	        	camera1.strafeLeft(movementSpeed*dt);

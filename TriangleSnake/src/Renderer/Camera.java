@@ -1,71 +1,101 @@
 package Renderer;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Matrix3f;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Quaternion;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 public class Camera {
 
 	public static final int size = 60;
 	
-	float[] pos;
-	float pitch;
-	float yaw;
+	Vector3f pos;
+	Vector3f forward;
+	Vector3f right;
+	Vector3f up;
 	
 	public Camera(float start_x, float start_y, float start_z) {
-		
-		pos = new float[]{start_x, start_y, start_z};
-		pitch = 0.0f;
-		yaw = 0.0f;
-		
+		pos = new Vector3f(start_x, start_y, start_z);
+		forward = new Vector3f(0.0f, 0.0f, -1.0f);
+		right = new Vector3f(1.0f, 0.0f, 0.0f);
+		up = new Vector3f(0.0f, 1.0f, 0.0f);
 	}
 	
-	public float[] getPos() {
+	public Vector3f getPos() {
 		return pos;
 	}
 	
+	void rotate(Matrix4f m, Vector3f v) {
+		Vector4f v4 = new Vector4f(v.x, v.y, v.z, 1);
+		Matrix4f.transform(m, v4, v4);
+		v.x = v4.x;
+		v.y = v4.y;
+		v.z = v4.z;
+	}
+	
 	//increment the camera's current yaw rotation
-	public void yaw(float amount) {
+	public void yaw(float amount) {	
 	    //increment the yaw by the amount param
-	    yaw += amount;
+	    Matrix4f m = new Matrix4f();
+	    m.rotate((float)(amount * Math.PI / 180), up);
+	    rotate(m, forward);
+	    rotate(m, right);
 	}
 	 
 	//increment the camera's current yaw rotation
 	public void pitch(float amount) {
 	    //increment the pitch by the amount param
-	    pitch += amount;
+		Matrix4f m = new Matrix4f();
+	    m.rotate((float)(amount * Math.PI / 180), right);
+	    rotate(m, up);
+	    rotate(m, forward);
 	}
 	
-	//moves the camera forward relative to its current rotation (yaw)
+	//moves the camera forward relative to its current 3d orientation
 	public void walkForward(float distance) {
-		pos[0] -= distance * (float)Math.sin(Math.toRadians(yaw));
-		pos[2] += distance * (float)Math.cos(Math.toRadians(yaw));
+		pos.x += forward.x;
+		pos.y += forward.y;
+		pos.z += forward.z;
 		
 		check_outside_area();
 	}
 	 
-	//moves the camera backward relative to its current rotation (yaw)
+	//moves the camera backward relative to its current 3d orientation
 	public void walkBackwards(float distance) {
-		pos[0] += distance * (float)Math.sin(Math.toRadians(yaw));
-		pos[2] -= distance * (float)Math.cos(Math.toRadians(yaw));
+		pos.x -= forward.x;
+		pos.y -= forward.y;
+		pos.z -= forward.z;
 		
 		check_outside_area();
 	}
 	
 	public void jump(float distance) {
-		pos[1] -= distance;
+		pos.x += up.x;
+		pos.y += up.y;
+		pos.z += up.z;
 		
 		check_outside_area();
 	}
 	
 	public void move_down(float distance) {
-		pos[1] += distance;
+		pos.x -= up.x;
+		pos.y -= up.y;
+		pos.z -= up.z;
 		
 		check_outside_area();
 	}
 	 
 	//strafes the camera left relitive to its current rotation (yaw)
 	public void strafeLeft(float distance) {
-		pos[0] -= distance * (float)Math.sin(Math.toRadians(yaw-90));
-		pos[2] += distance * (float)Math.cos(Math.toRadians(yaw-90));
+		pos.x -= right.x;
+		pos.y -= right.y;
+		pos.z -= right.z;
 		
 		check_outside_area();
 	}
@@ -73,49 +103,67 @@ public class Camera {
 	//strafes the camera right relitive to its current rotation (yaw)
 	public void strafeRight(float distance)
 	{
-		pos[0] -= distance * (float)Math.sin(Math.toRadians(yaw+90));
-		pos[2] += distance * (float)Math.cos(Math.toRadians(yaw+90));
+		pos.x += right.x;
+		pos.y += right.y;
+		pos.z += right.z;
 		
 		check_outside_area();
 	}
 	
 	public void apply_camera_transform() {
+		ByteBuffer bytes = ByteBuffer.allocateDirect(16 * 4);
+		bytes.order(ByteOrder.LITTLE_ENDIAN);
+		FloatBuffer buffer = bytes.asFloatBuffer();
 		
-		//roatate the pitch around the X axis
-        GL11.glRotatef(pitch, 1.0f, 0.0f, 0.0f);
-        //roatate the yaw around the Y axis
-        GL11.glRotatef(yaw, 0.0f, 1.0f, 0.0f);
-        //translate to the position vector's location
-        GL11.glTranslatef(pos[0], pos[1], pos[2]);
+		buffer.put(right.x);
+		buffer.put(up.x);
+		buffer.put(-forward.x);
+		buffer.put(0);
+		buffer.put(right.y);
+		buffer.put(up.y);
+		buffer.put(-forward.y);
+		buffer.put(0);
+		buffer.put(right.z);
+		buffer.put(up.z);
+		buffer.put(-forward.z);
+		buffer.put(0);	
+		buffer.put(0);
+		buffer.put(0);
+		buffer.put(0);
+		buffer.put(1);
+		buffer.flip();
+		
+		GL11.glLoadMatrix(buffer);
+		GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
 		
 	}
 	
 	private void check_outside_area() {
-		if (pos[0] > (float)size/2.0f) {
-			pos[0] = (float)-size + pos[0];
-			System.out.println("0+: " +pos[0]);
+		if (pos.x > (float)size/2.0f) {
+			pos.x = (float)-size + pos.x;
+			System.out.println("0+: " +pos.x);
 		}
-		else if (pos[0] < -(float)size/2.0f) {
-			pos[0] = (float)size - pos[0];
-			System.out.println("0-: " +pos[0]);
-		}
-		
-		if (pos[1] > (float)size/2.0f) {
-			pos[1] = -size + pos[1];
-			System.out.println("1: " +pos[1]);
-		}
-		else if (pos[1] < (float)-size/2.0f) {
-			pos[1] = size - pos[1];
-			System.out.println("1: " +pos[1]);
+		else if (pos.x < -(float)size/2.0f) {
+			pos.x = (float)size - pos.x;
+			System.out.println("0-: " +pos.x);
 		}
 		
-		if (pos[2] > (float)size/2.0f) {
-			pos[2] = -size + pos[2];
-			System.out.println("2: " +pos[2]);
+		if (pos.y > (float)size/2.0f) {
+			pos.y = -size + pos.y;
+			System.out.println("1: " +pos.y);
 		}
-		else if (pos[2] < (float)-size/2.0f) {
-			pos[2] = size - pos[2];
-			System.out.println("2: " +pos[2]);
+		else if (pos.y < (float)-size/2.0f) {
+			pos.y = size - pos.y;
+			System.out.println("1: " +pos.y);
+		}
+		
+		if (pos.z > (float)size/2.0f) {
+			pos.z = -size + pos.z;
+			System.out.println("2: " +pos.z);
+		}
+		else if (pos.z < (float)-size/2.0f) {
+			pos.z = size - pos.z;
+			System.out.println("2: " +pos.z);
 		}
 	}
 	

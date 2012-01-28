@@ -7,6 +7,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.Sphere;
+import org.lwjgl.util.vector.Vector3f;
 
 public class RenderWorld {
 
@@ -269,10 +270,10 @@ public class RenderWorld {
 		basic.setValue1f(basic_ind_animate, basic_animate);
 		basic.setValue1i(basic_ind_texture, 0);
 		
-		float[] pos = camera.pos;
-		GL11.glTranslatef(-pos[0], -pos[1], -pos[2]);
+		Vector3f pos = camera.pos;
+		GL11.glTranslatef(pos.x, pos.y, pos.z);
 		drawBox();
-		GL11.glTranslatef(pos[0], pos[1], pos[2]);
+		GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
 		basic.unbind();
 		//SKYBOX END
 		
