@@ -134,12 +134,14 @@ public class RenderWorld {
 		
 		float[][] v = new float[8][3];
 		
-		v[0][0] = v[1][0] = v[2][0] = v[3][0] = -32;
-		v[4][0] = v[5][0] = v[6][0] = v[7][0] = 32;
-		v[0][1] = v[1][1] = v[4][1] = v[5][1] = -32;
-		v[2][1] = v[3][1] = v[6][1] = v[7][1] = 32;
-		v[0][2] = v[3][2] = v[4][2] = v[7][2] = 32;
-		v[1][2] = v[2][2] = v[5][2] = v[6][2] = -32;
+		float s = 1;
+		
+		v[0][0] = v[1][0] = v[2][0] = v[3][0] = -s;
+		v[4][0] = v[5][0] = v[6][0] = v[7][0] = s;
+		v[0][1] = v[1][1] = v[4][1] = v[5][1] = -s;
+		v[2][1] = v[3][1] = v[6][1] = v[7][1] = s;
+		v[0][2] = v[3][2] = v[4][2] = v[7][2] = s;
+		v[1][2] = v[2][2] = v[5][2] = v[6][2] = -s;
 	
 		//GL11.glColor3f(0.0f, 1.0f, 0.0f);
 		
@@ -173,7 +175,7 @@ public class RenderWorld {
 			triangles2.update(dt, camera);
 	}
 	
-	public void draw(int view, Camera camera) {
+	public void draw(int view, Camera camera, Camera enemy_cam) {
 		
 		if (view == 0)
 			GL11.glViewport(0, 0, Display.getDisplayMode().getWidth()/2 -5, Display.getDisplayMode().getHeight());
@@ -273,7 +275,11 @@ public class RenderWorld {
 		
 		Vector3f pos = camera.pos;
 		GL11.glTranslatef(pos.x, pos.y, pos.z);
+		float s = Camera.size / 2 + 2;
+		GL11.glPushMatrix();
+		GL11.glScalef(s, s, s);
 		drawBox();
+		GL11.glPopMatrix();
 		GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
 		basic.unbind();
 		//SKYBOX END
@@ -282,7 +288,7 @@ public class RenderWorld {
 		
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-		drawBox();
+		//drawBox();
 		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
@@ -298,6 +304,14 @@ public class RenderWorld {
 		
 		triangles1.draw();
 		
+		// test: draw player
+		GL11.glPushMatrix();
+		if (camera.who == 0) camera.apply_player_transform();
+		else enemy_cam.apply_player_transform();
+		GL11.glScalef(0.3f, 0.3f, 0.3f);
+		drawBox();
+		GL11.glPopMatrix();
+		
 		//if (view == 0)
 		//	GL11.glColor3f(0.0f, 1.0f, 0.0f);
 		//if (view == 1)
@@ -306,6 +320,15 @@ public class RenderWorld {
 		triangle.setValue1f(triangle_ind_color, 1.0f); //DIFFERENT COLOR
 		
 		triangles2.draw();
+		
+		// test: draw player
+		GL11.glPushMatrix();
+		if (camera.who == 1) camera.apply_player_transform();
+		else enemy_cam.apply_player_transform();
+		GL11.glScalef(0.3f, 0.3f, 0.3f);
+		drawBox();
+		GL11.glPopMatrix();
+				
 		triangle.unbind();
 		
 		//GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);

@@ -34,6 +34,7 @@ public class Game {
 	float mouseSensitivity = 0.08f;
     float movementSpeed = 10.0f; //move 10 units per second
     float rotationSpeed = 200.0f;
+    double game_over_timer;
     
     boolean was_pressed = false;
     
@@ -47,9 +48,9 @@ public class Game {
     
 	public void restart() {
 		renderer = new RenderWorld();
-		camera1 = new Camera(renderer, -10, 0, 0);
+		camera1 = new Camera(0, renderer, -10, 0, 0);
 		
-		camera2 = new Camera(renderer, 10, 0, 0);
+		camera2 = new Camera(1, renderer, 10, 0, 0);
 		started = false;
 	}
 	
@@ -84,7 +85,7 @@ public class Game {
 			else
 				System.out.println("fail");
 		
-		Camera testcam = new Camera(renderer, 0, 0, 0);
+		Camera testcam = new Camera(0, renderer, 0, 0, 0);
 		GameObject o1 = new GameObject(0, 0, 0, testcam);
 		testcam.yaw(-1);
 		GameObject o2 = new GameObject(0, 0, 0, testcam);
@@ -94,7 +95,7 @@ public class Game {
 		else
 			System.out.println("fail");
 		
-		testcam = new Camera(renderer, 0, 0, 0);
+		testcam = new Camera(0, renderer, 0, 0, 0);
 		o1 = new GameObject(0, 0, 0, testcam);
 		testcam.yaw(1);
 		o2 = new GameObject(0, 0, 0, testcam);
@@ -104,7 +105,7 @@ public class Game {
 		else
 			System.out.println("fail");
 		
-		testcam = new Camera(renderer, 0, 0, 0);
+		testcam = new Camera(0, renderer, 0, 0, 0);
 		o1 = new GameObject(0, 0, 0, testcam);
 		o2 = new GameObject(0, 0, 0, testcam);
 		if (!o1.collide(o2)) {
@@ -145,8 +146,14 @@ public class Game {
 	        lastTime = time;
 	        
 	        if (renderer.did_collide) {
-	        	restart();
+	        	if (time - game_over_timer > 5000) {
+	        		game_over_timer = time;
+	        	}
+	        	if (time - game_over_timer > 2000)
+	        		restart();
 	        }
+	        
+	        
 	        
 	        //INPUT
 	        if (Mouse.isButtonDown(1)) {
@@ -177,7 +184,7 @@ public class Game {
 	        
 			if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
 				
-				//if (!started) started = true;
+				if (!started) started = true;
 				//System.out.println(dt);
 				//camera1.jump(movementSpeed*dt);
 				camera1.pitch(rotationSpeed*dt);
@@ -243,7 +250,7 @@ public class Game {
 			
 			if (Display.isCloseRequested()) {
 				running = false;
-			} else {
+			} else if (!renderer.did_collide) {
 				
 				if (started) {
 					camera1.walkForward(movementSpeed*dt);
@@ -259,13 +266,13 @@ public class Game {
 				
 				camera1.apply_camera_transform();
 				
-				renderer.draw(0, camera1);
+				renderer.draw(0, camera1, camera2);
 				
 				GL11.glLoadIdentity();
 				
 				camera2.apply_camera_transform();
 				
-				renderer.draw(1, camera2);
+				renderer.draw(1, camera2, camera1);
 				
 				final_pass();
 			}

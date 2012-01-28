@@ -6,8 +6,8 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class Triangles {
 
-	public static final int LIMIT = 1000;
-	public static final float TIMETOADD = 2.0f; //0.8
+	public static final int LIMIT = 300;
+	public static final float TIMETOADD = 1.2f; //0.8
 	
 	private ArrayList<GameObject> obj_list;
 	
@@ -77,7 +77,16 @@ public class Triangles {
 	public void draw() {
 		int s = Camera.size;
 		for (int i=0; i<obj_list.size(); i++) {
-			obj_list.get(i).draw();
+			
+			for (int y = -2; y <= 2; y++) {
+				for (int x = -2; x <= 2; x++) {
+					for (int z = -2; z <= 2; z++) {
+						obj_list.get(i).draw_offset(s * x, s * y, s * z);
+					}
+				}
+			}
+			
+			/*obj_list.get(i).draw();
 			
 			obj_list.get(i).draw_offset(s, 0, 0);
 			obj_list.get(i).draw_offset(-s, 0, 0);
@@ -98,7 +107,7 @@ public class Triangles {
 			obj_list.get(i).draw_offset(0, s, -s);
 			obj_list.get(i).draw_offset(0, s, s);
 			obj_list.get(i).draw_offset(0, -s, s);
-			obj_list.get(i).draw_offset(0, -s, -s);
+			obj_list.get(i).draw_offset(0, -s, -s);*/
 		}
 	}
 	

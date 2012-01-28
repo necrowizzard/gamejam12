@@ -13,7 +13,9 @@ import org.lwjgl.util.vector.Vector4f;
 
 public class Camera {
 
-	public static final int size = 100;
+	public static final int size = 60;
+	
+	int who;
 	
 	Vector3f pos;
 	Vector3f forward;
@@ -22,7 +24,8 @@ public class Camera {
 	
 	RenderWorld render;
 	
-	public Camera(RenderWorld render, float start_x, float start_y, float start_z) {
+	public Camera(int who, RenderWorld render, float start_x, float start_y, float start_z) {
+		this.who = who;
 		pos = new Vector3f(start_x, start_y, start_z);
 		forward = new Vector3f(0.0f, 0.0f, -1.0f);
 		right = new Vector3f(1.0f, 0.0f, 0.0f);
@@ -118,6 +121,9 @@ public class Camera {
 		bytes.order(ByteOrder.LITTLE_ENDIAN);
 		FloatBuffer buffer = bytes.asFloatBuffer();
 		
+		GL11.glLoadIdentity();
+		GL11.glTranslatef(0, 0, -4);
+		
 		buffer.put(right.x);
 		buffer.put(up.x);
 		buffer.put(-forward.x);
@@ -136,9 +142,35 @@ public class Camera {
 		buffer.put(1);
 		buffer.flip();
 		
-		GL11.glLoadMatrix(buffer);
+		GL11.glMultMatrix(buffer);
 		GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
+
+	}
+	
+	void apply_player_transform() {
+		ByteBuffer bytes = ByteBuffer.allocateDirect(16 * 4);
+		bytes.order(ByteOrder.LITTLE_ENDIAN);
+		FloatBuffer buffer = bytes.asFloatBuffer();
+		GL11.glTranslatef(pos.x, pos.y, pos.z);
+		buffer.put(right.x);
+		buffer.put(right.y);
+		buffer.put(right.z);
+		buffer.put(0);
+		buffer.put(up.x);
+		buffer.put(up.y);
+		buffer.put(up.z);
+		buffer.put(0);
+		buffer.put(-forward.x);
+		buffer.put(-forward.y);
+		buffer.put(-forward.z);
+		buffer.put(0);	
+		buffer.put(0);
+		buffer.put(0);
+		buffer.put(0);
+		buffer.put(1);
+		buffer.flip();
 		
+		GL11.glMultMatrix(buffer);
 	}
 	
 	private void check_inside_and_collision() {
