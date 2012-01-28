@@ -20,11 +20,14 @@ public class Camera {
 	Vector3f right;
 	Vector3f up;
 	
-	public Camera(float start_x, float start_y, float start_z) {
+	RenderWorld render;
+	
+	public Camera(RenderWorld render, float start_x, float start_y, float start_z) {
 		pos = new Vector3f(start_x, start_y, start_z);
 		forward = new Vector3f(0.0f, 0.0f, -1.0f);
 		right = new Vector3f(1.0f, 0.0f, 0.0f);
 		up = new Vector3f(0.0f, 1.0f, 0.0f);
+		this.render = render;
 	}
 	
 	public Vector3f getPos() {
@@ -59,55 +62,55 @@ public class Camera {
 	
 	//moves the camera forward relative to its current 3d orientation
 	public void walkForward(float distance) {
-		pos.x += forward.x;
-		pos.y += forward.y;
-		pos.z += forward.z;
+		pos.x += forward.x * distance;
+		pos.y += forward.y * distance;
+		pos.z += forward.z * distance;
 		
-		check_outside_area();
+		check_pitside_and_collision();
 	}
 	 
 	//moves the camera backward relative to its current 3d orientation
 	public void walkBackwards(float distance) {
-		pos.x -= forward.x;
-		pos.y -= forward.y;
-		pos.z -= forward.z;
+		pos.x -= forward.x * distance;
+		pos.y -= forward.y * distance;
+		pos.z -= forward.z * distance;
 		
-		check_outside_area();
+		check_pitside_and_collision();
 	}
 	
 	public void jump(float distance) {
-		pos.x += up.x;
-		pos.y += up.y;
-		pos.z += up.z;
+		pos.x += up.x * distance;
+		pos.y += up.y * distance;
+		pos.z += up.z * distance;
 		
-		check_outside_area();
+		check_pitside_and_collision();
 	}
 	
 	public void move_down(float distance) {
-		pos.x -= up.x;
-		pos.y -= up.y;
-		pos.z -= up.z;
+		pos.x -= up.x * distance;
+		pos.y -= up.y * distance;
+		pos.z -= up.z * distance;
 		
-		check_outside_area();
+		check_pitside_and_collision();
 	}
 	 
 	//strafes the camera left relitive to its current rotation (yaw)
 	public void strafeLeft(float distance) {
-		pos.x -= right.x;
-		pos.y -= right.y;
-		pos.z -= right.z;
+		pos.x -= right.x * distance;
+		pos.y -= right.y * distance;
+		pos.z -= right.z * distance;
 		
-		check_outside_area();
+		check_pitside_and_collision();
 	}
 	 
 	//strafes the camera right relitive to its current rotation (yaw)
 	public void strafeRight(float distance)
 	{
-		pos.x += right.x;
-		pos.y += right.y;
-		pos.z += right.z;
+		pos.x += right.x * distance;
+		pos.y += right.y * distance;
+		pos.z += right.z * distance;
 		
-		check_outside_area();
+		check_pitside_and_collision();
 	}
 	
 	public void apply_camera_transform() {
@@ -138,7 +141,7 @@ public class Camera {
 		
 	}
 	
-	private void check_outside_area() {
+	private void check_pitside_and_collision() {
 		if (pos.x > (float)size/2.0f) {
 			pos.x = (float)-size + pos.x;
 			System.out.println("0+: " +pos.x);
@@ -164,6 +167,18 @@ public class Camera {
 		else if (pos.z < (float)-size/2.0f) {
 			pos.z = size - pos.z;
 			System.out.println("2: " +pos.z);
+		}
+		
+		// Create a temporary game object for collision checking. We create a "cross like"
+		// object out of three game objects to check against.
+		GameObject gob = new GameObject(pos.x, pos.z, pos.y, this);
+		boolean a = render.collide(gob);
+		gob.rotate_90_y();
+		boolean b = render.collide(gob);
+		gob.rotate_90_x();
+		boolean c = render.collide(gob);
+		if (a || b || c) {
+			System.out.println("collide");
 		}
 	}
 	

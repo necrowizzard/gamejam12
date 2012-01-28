@@ -51,9 +51,9 @@ public class Game {
 		mouseGUI = new MouseGUI();
 		
 		renderer = new RenderWorld();
-		camera1 = new Camera(0, 0, -5);
+		camera1 = new Camera(renderer, 0, 0, -5);
 		
-		camera2 = new Camera(0, 0, 5);
+		camera2 = new Camera(renderer, 0, 0, 5);
 		
 		framebuffer = new FBO(RenderWorld.SIZEX, RenderWorld.SIZEY);
 		post = new Renderer.Shader("/shader/post");
@@ -181,7 +181,7 @@ public class Game {
 				
 				if (started) {
 					camera1.walkForward(movementSpeed*dt);
-			        camera2.walkForward(movementSpeed*dt);
+			        //camera2.walkForward(movementSpeed*dt);
 				}
 				
 				renderer.update(dt, camera1, 0);

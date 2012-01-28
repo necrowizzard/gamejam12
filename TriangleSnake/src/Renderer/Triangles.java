@@ -22,9 +22,11 @@ public class Triangles {
 		
 	}
 	
-	public boolean collide(float px, float py, float pz) {
+	public boolean collide(GameObject gob) {
 		
-		
+		for (int i=0; i<obj_list.size(); i++) {
+			if (gob.collide(obj_list.get(i))) return true;
+		}
 		
 		return false;
 	}
@@ -86,13 +88,14 @@ public class Triangles {
 		}
 	}
 	
-	public float intersect(Vector3f ray_pos, Vector3f ray_dir) {
+	// found on http://gamedev.stackexchange.com/questions/12360/how-do-you-determine-which-object-surface-the-users-pointing-at-with-lwjgl
+	static public boolean ray_intersects_triangle(Vector3f ray_pos, Vector3f ray_dir, float ray_length,
+			Vector3f vertex1, Vector3f vertex2, Vector3f vertex3) {
 	    // Compute vectors along two edges of the triangle.
 	    Vector3f edge1 = null, edge2 = null;
-	    Vector3f vertex1 = null;
 
-	    //edge1 = Vector3f.sub(vertex2, vertex1, edge1);
-	    //edge2 = Vector3f.sub(vertex3, vertex1, edge2);
+	    edge1 = Vector3f.sub(vertex2, vertex1, edge1);
+	    edge2 = Vector3f.sub(vertex3, vertex1, edge2);
 
 	    // Compute the determinant.
 	    Vector3f directionCrossEdge2 = null;
@@ -102,7 +105,7 @@ public class Triangles {
 	    float determinant = Vector3f.dot(directionCrossEdge2, edge1);
 	    // If the ray and triangle are parallel, there is no collision.
 	    if (determinant > -.0000001f && determinant < .0000001f) {
-	        return Float.MAX_VALUE;
+	        return false;
 	    }
 
 	    float inverseDeterminant = 1.0f / determinant;
@@ -117,7 +120,7 @@ public class Triangles {
 
 	    // Make sure the U is inside the triangle.
 	    if (triangleU < 0 || triangleU > 1) {
-	        return Float.MAX_VALUE;
+	        return false;
 	    }
 
 	    // Calculate the V parameter of the intersection point.
@@ -130,7 +133,7 @@ public class Triangles {
 
 	    // Make sure the V is inside the triangle.
 	    if (triangleV < 0 || triangleU + triangleV > 1) {
-	        return Float.MAX_VALUE;
+	        return false;
 	    }
 
 	    // Get the distance to the face from our ray origin
@@ -140,10 +143,38 @@ public class Triangles {
 
 	    // Is the triangle behind us?
 	    if (rayDistance < 0) {
-	        rayDistance *= -1;
-	        return Float.MAX_VALUE;
+	        return false;
 	    }
-	    return rayDistance;
+	    
+	    if (rayDistance > ray_length) {
+	    	return false;
+	    }
+	    return true;
+	}
+	
+	static private Vector3f diffvec(Vector3f v1, Vector3f v2) {
+		return new Vector3f(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
+	}
+	
+	static boolean triangle_intersects_triangle(Vector3f vertex1, Vector3f vertex2, Vector3f vertex3,
+			Vector3f other1, Vector3f other2, Vector3f other3) {
+		for (int i = 0; i < 2; i++) {
+			if (ray_intersects_triangle(vertex1, diffvec(vertex2, vertex1), diffvec(vertex2, vertex1).length(),
+					other1, other2, other3)) return true;
+			if (ray_intersects_triangle(vertex2, diffvec(vertex3, vertex2), diffvec(vertex3, vertex2).length(),
+					other1, other2, other3)) return true;
+			if (ray_intersects_triangle(vertex3, diffvec(vertex1, vertex3), diffvec(vertex1, vertex3).length(),
+					other1, other2, other3)) return true;
+			Vector3f temp1 = other1, temp2 = other2, temp3 = other3;
+			other1 = vertex1;
+			other2 = vertex2;
+			other3 = vertex3;
+			vertex1 = temp1;
+			vertex2 = temp2;
+			vertex3 = temp3;
+		}
+	
+		return false;
 	}
 
 	

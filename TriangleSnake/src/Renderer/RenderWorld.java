@@ -329,5 +329,9 @@ public class RenderWorld {
 		GL11.glPopMatrix();
 		
 	}
+
+	public boolean collide(GameObject gob) {
+		return triangles1.collide(gob) | triangles2.collide(gob);
+	}
 	
 }
