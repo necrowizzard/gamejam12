@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Triangles {
 
-	public static final float TIMETOADD = 0.5f;
+	public static final float TIMETOADD = 2.0f; //0.8
 	
 	private ArrayList<GameObject> obj_list;
 	

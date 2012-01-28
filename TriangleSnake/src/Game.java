@@ -5,6 +5,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
 import GUI.MouseGUI;
 import Renderer.Camera;
@@ -37,6 +38,8 @@ public class Game {
 	
     //VERY UGLY: not time!!!
 	private Shader post;
+	private Shader post2;
+	private int post2_ind_texture, post2_ind_texture2;
 	private FBO framebuffer;
     
 	public Game() {
@@ -53,6 +56,10 @@ public class Game {
 		camera2 = new Camera(0, 0, 5);
 		
 		framebuffer = new FBO(RenderWorld.SIZEX, RenderWorld.SIZEY);
+		post = new Renderer.Shader("/shader/post");
+		post2 = new Renderer.Shader("/shader/post2");
+		post2_ind_texture = post2.initValue1i("color_texture");
+		post2_ind_texture2 = post2.initValue1i("glow_texture");
 		
 		//System.out.println("Blaaaaaa: " + level.debug_get_texture()[1]);
 	}
@@ -206,10 +213,14 @@ public class Game {
 	private void final_pass () {
 		framebuffer.unbind();
 		
+		framebuffer.bind(1);
+		
 		//DRAW TO FBO
 		
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glPushMatrix();
+		
+		post.bind();
 		
 		framebuffer.bind_texture(0);
 		
@@ -249,6 +260,67 @@ public class Game {
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glPopMatrix();
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
+		
+		post.unbind();
+		
+		framebuffer.unbind();
+		
+		
+		//TODO: FINAL PASS
+		
+		//DRAW TO FBO
+		
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
+		GL11.glPushMatrix();
+		
+		post2.bind();
+		
+		post2.setValue1i(post2_ind_texture, 0);
+		framebuffer.bind_texture(0);
+		
+		GL13.glActiveTexture(GL13.GL_TEXTURE1);
+		post2.setValue1i(post2_ind_texture2, 1);
+		framebuffer.bind_texture(1);
+		
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
+		GL11.glLoadIdentity(); // not a huge problem
+
+		GL11.glOrtho(-1.0, 1.0, -1.0, 1.0, 1.0, 40.0);
+
+		GL11.glMatrixMode(GL11.GL_MODELVIEW);
+		GL11.glLoadIdentity();
+
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT
+				| GL11.GL_STENCIL_BUFFER_BIT);
+
+		// draw view plane
+		GL11.glColor3f(1.0f, 1.0f, 1.0f);
+		GL11.glBegin(GL11.GL_QUADS);
+
+		GL11.glTexCoord2f(0.0f, 1.0f);
+		GL11.glVertex3f(-1.0f, 1.0f, -1.0f);
+
+		GL11.glTexCoord2f(0.0f, 0.0f);
+		GL11.glVertex3f(-1.0f, -1.0f, -1.0f);
+
+		GL11.glTexCoord2f(1.0f, 0.0f);
+		GL11.glVertex3f(1.0f, -1.0f, -1.0f);
+
+		GL11.glTexCoord2f(1.0f, 1.0f);
+		GL11.glVertex3f(1.0f, 1.0f, -1.0f);
+
+		GL11.glEnd();
+		
+		framebuffer.unbind_texture();
+		
+		//GL11.glPopMatrix();
+		
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
+		GL11.glPopMatrix();
+		GL11.glMatrixMode(GL11.GL_MODELVIEW);
+		
+		post2.unbind();
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 	}

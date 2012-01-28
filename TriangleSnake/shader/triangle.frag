@@ -14,13 +14,18 @@ void main()
     
     gl_FragColor = vec4(color.x, color.x, color.x, 1.0);
     
-    if (texture_coordinate.x > 0.15 && texture_coordinate.x < 0.85
-    	&& texture_coordinate.y > 0.15 && texture_coordinate.y < 0.85
-    	&& color.x < 0.7) discard;
+    //if (texture_coordinate.x > 0.15 && texture_coordinate.x < 0.85
+    //	&& texture_coordinate.y > 0.15 && texture_coordinate.y < 0.85
+    //	&& color.x < 0.8) discard;
+    if ( color.x < 0.75) discard;
     
     gl_FragColor.r *= color_parameter;
-    gl_FragColor.g *= 1.0-color_parameter;
+    gl_FragColor.g *= 0.7-color_parameter;
     gl_FragColor.b *= 0.5-color_parameter;
+    
+    //gl_FragColor *= vec4(0.15, 0.1, 0.1, 1.0); //dark
+    
+    gl_FragColor += vec4(0.5-color_parameter*1.5, 0.5-color_parameter*1.5, 0.1, 1.0);
     
     //gl_FragColor = vec4(position.x,position.y, position.z, 1.0);
 }

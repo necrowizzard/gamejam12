@@ -28,7 +28,7 @@ public class Shader {
 	//is filled with the UNIFORM location connections
 	private ArrayList<Integer> value_ids = new ArrayList<Integer>();
 	
-	Shader(String path) {
+	public Shader(String path) {
 		
 		String vert_path = path + ".vert";
 		String frag_path = path + ".frag";

@@ -13,7 +13,7 @@ public class GameObject {
 		this.y = y;
 		this.z = z;
 		
-		scale = 2.0f;
+		scale = 5.0f; //3.0
 	}
 	
 	public void setPos(float x, float y, float z) {
