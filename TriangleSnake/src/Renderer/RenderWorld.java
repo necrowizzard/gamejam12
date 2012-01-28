@@ -69,21 +69,33 @@ public class RenderWorld {
 		
 		for (int j=0; j<640; j++) {
 			for (int i=0; i<640; i++) {
-				texture[3*(640*j+i)] = (float)Noise.noise(10.0f*(float)i/640.0f,10.0f*(float)j/640.0f,0.85f); //0.9
-				texture[3*(640*j+i)+1] = (float)Noise.noise(10.0f*(float)i/640.0f,10.0f*(float)j/640.0f,1.0f);
-				texture[3*(640*j+i)+2] = (float)Noise.noise(10.0f*(float)i/640.0f,10.0f*(float)j/640.0f,1.2f); //1.1
+				
+				texture[3*(640*j+i)] = (float)Noise.noise(10.0f*(float)i/640.0f,10.0f*(float)j/640.0f,10.0f*(float)i/640.0f); //0.9
+				texture[3*(640*j+i)+1] = (float)Noise.noise(10.0f*(float)i/640.0f,10.0f*(float)j/640.0f,10.0f*(float)i/640.0f);
+				texture[3*(640*j+i)+2] = (float)Noise.noise(10.0f*(float)i/640.0f,10.0f*(float)j/640.0f,10.0f*(float)i/640.0f); //1.1
+				
+				//texture[3*(640*j+i)] = (float)Noise.noise(10.0f*(float)i/640.0f,10.0f*(float)j/640.0f,0.85f); //0.9
+				//texture[3*(640*j+i)+1] = (float)Noise.noise(10.0f*(float)i/640.0f,10.0f*(float)j/640.0f,1.0f);
+				//texture[3*(640*j+i)+2] = (float)Noise.noise(10.0f*(float)i/640.0f,10.0f*(float)j/640.0f,1.2f); //1.1
 				//cast -1/1 to 0/1
 				texture[3*(640*j+i)] = (texture[3*(640*j+i)]+1.0f)/2.0f;
 				texture[3*(640*j+i)+1] = (texture[3*(640*j+i)+1]+1.0f)/2.0f;
 				texture[3*(640*j+i)+2] = (texture[3*(640*j+i)+2]+1.0f)/2.0f;
 				
+				//old parameters
+				
 				texture[3*(640*j+i)] *= 10.0f;
 				texture[3*(640*j+i)+1] *= 10.0f;
 				texture[3*(640*j+i)+2] *= 10.0f;
 				
-				texture[3*(640*j+i)] = texture[3*(640*j+i)]-(int)texture[3*(640*j+i)];
-				texture[3*(640*j+i)+1] = texture[3*(640*j+i)+1]-(int)texture[3*(640*j+i)+1];
-				texture[3*(640*j+i)+2] = texture[3*(640*j+i)+2]-(int)texture[3*(640*j+i)+2];
+				//texture[3*(640*j+i)] = texture[3*(640*j+i)]-(int)texture[3*(640*j+i)];
+				//texture[3*(640*j+i)+1] = texture[3*(640*j+i)+1]-(int)texture[3*(640*j+i)+1];
+				//texture[3*(640*j+i)+2] = texture[3*(640*j+i)+2]-(int)texture[3*(640*j+i)+2];
+				
+				//texture[3*(640*j+i)] = (float)Math.cos((float)(10.0f*(float)i/640.0f) + texture[3*(640*j+i)]);
+				texture[3*(640*j+i)+1] = (float)Math.cos((float)(10.0f*(float)i/640.0f) + texture[3*(640*j+i)]+1);
+				//texture[3*(640*j+i)+2] = (float)Math.cos((float)(10.0f*(float)j/640.0f) + texture[3*(640*j+i)]+2);
+				
 			}
 		}
 		
