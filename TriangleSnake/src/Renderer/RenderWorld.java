@@ -28,6 +28,7 @@ public class RenderWorld {
 	private boolean firstloop = true;
 	
 	private Sphere sun;
+	public boolean did_collide;
 	
 	public RenderWorld() {
 		
@@ -331,7 +332,17 @@ public class RenderWorld {
 	}
 
 	public boolean collide(GameObject gob) {
-		return triangles1.collide(gob) | triangles2.collide(gob);
+		return triangles1.collide(gob);// | triangles2.collide(gob);
+	}
+	
+	public boolean collide_sphere(Vector3f center) {
+		return triangles1.collide_sphere(center) ||
+				triangles2.collide_sphere(center);
+	}
+
+	public void collide_event() {
+		did_collide = true;
+		
 	}
 	
 }

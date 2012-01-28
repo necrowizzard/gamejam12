@@ -31,6 +31,16 @@ public class Triangles {
 		return false;
 	}
 	
+	public boolean collide_sphere(Vector3f center) {
+		
+		for (int i=0; i<obj_list.size(); i++) {
+			GameObject go = obj_list.get(i);
+			if (go.collide_sphere(center)) return true;
+		}
+		
+		return false;
+	}
+	
 	public void update(float dt, Camera camera) {
 		
 		time += dt;
@@ -41,7 +51,10 @@ public class Triangles {
 			//System.out.println("added triangle: " + pos[0] +"/"+ pos[1] +"/"+ pos[2]);
 			
 			if (obj_list.size() < LIMIT)
-				obj_list.add(new GameObject(pos.x, pos.y, pos.z + 1.0f, camera));
+				obj_list.add(new GameObject(
+						pos.x - camera.forward.x * GameObject.scale,
+						pos.y - camera.forward.y * GameObject.scale,
+						pos.z - camera.forward.z * GameObject.scale, camera));
 			else {
 				//Limit size
 				if (counter > LIMIT) {
@@ -62,29 +75,30 @@ public class Triangles {
 	}
 	
 	public void draw() {
+		int s = Camera.size;
 		for (int i=0; i<obj_list.size(); i++) {
 			obj_list.get(i).draw();
 			
-			obj_list.get(i).draw_offset(60, 0, 0);
-			obj_list.get(i).draw_offset(-60, 0, 0);
-			obj_list.get(i).draw_offset(0, 60, 0);
-			obj_list.get(i).draw_offset(0, -60, 0);
-			obj_list.get(i).draw_offset(0, 0, 60);
-			obj_list.get(i).draw_offset(0, 0, -60);
+			obj_list.get(i).draw_offset(s, 0, 0);
+			obj_list.get(i).draw_offset(-s, 0, 0);
+			obj_list.get(i).draw_offset(0, s, 0);
+			obj_list.get(i).draw_offset(0, -s, 0);
+			obj_list.get(i).draw_offset(0, 0, s);
+			obj_list.get(i).draw_offset(0, 0, -s);
 			//obj_list.get(i).draw_offset(30, 0, 0);
 			//obj_list.get(i).draw_offset(-30, 0, 0);
 			
 			//diagonal horizontal
-			obj_list.get(i).draw_offset(60, 0, 60);
-			obj_list.get(i).draw_offset(-60, 0, 60);
-			obj_list.get(i).draw_offset(60, 0, -60);
-			obj_list.get(i).draw_offset(-60, 0, -60);
+			obj_list.get(i).draw_offset(s, 0, s);
+			obj_list.get(i).draw_offset(-s, 0, s);
+			obj_list.get(i).draw_offset(s, 0, -s);
+			obj_list.get(i).draw_offset(-s, 0, -s);
 			
 			//diagonal center
-			obj_list.get(i).draw_offset(0, 60, -60);
-			obj_list.get(i).draw_offset(0, 60, 60);
-			obj_list.get(i).draw_offset(0, -60, 60);
-			obj_list.get(i).draw_offset(0, -60, -60);
+			obj_list.get(i).draw_offset(0, s, -s);
+			obj_list.get(i).draw_offset(0, s, s);
+			obj_list.get(i).draw_offset(0, -s, s);
+			obj_list.get(i).draw_offset(0, -s, -s);
 		}
 	}
 	
@@ -99,7 +113,7 @@ public class Triangles {
 
 	    // Compute the determinant.
 	    Vector3f directionCrossEdge2 = null;
-	    directionCrossEdge2 = Vector3f.cross(ray_pos, edge2, directionCrossEdge2);
+	    directionCrossEdge2 = Vector3f.cross(ray_dir, edge2, directionCrossEdge2);
 
 
 	    float determinant = Vector3f.dot(directionCrossEdge2, edge1);
@@ -139,7 +153,6 @@ public class Triangles {
 	    // Get the distance to the face from our ray origin
 	    float rayDistance = Vector3f.dot(distanceCrossEdge1, edge2);
 	    rayDistance *= inverseDeterminant;
-
 
 	    // Is the triangle behind us?
 	    if (rayDistance < 0) {

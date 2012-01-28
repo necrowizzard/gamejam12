@@ -9,7 +9,7 @@ public class GameObject {
 	private Vector3f forward; // normal vector of the plane
 	private Vector3f up;
 	private Vector3f right;
-	private float scale;
+	static final float scale = 5;
 	
 	// axis aligned bounding box
 	private Vector3f aabb1, aabb2;
@@ -17,10 +17,9 @@ public class GameObject {
 	public GameObject(float x, float y, float z, Camera cam) {
 		aabb1 = new Vector3f();
 		aabb2 = new Vector3f();
-		
 		setPos(x, y, z, cam);
 		
-		scale = 5.0f; //3.0
+		
 	}
 	
 	public void rotate_90_y() {
@@ -42,59 +41,43 @@ public class GameObject {
 		this.right = new Vector3f(cam.right);
 		this.up = new Vector3f(cam.up);
 		this.forward = new Vector3f(cam.forward);
-		update_bounding_box();
+		this.right.scale(scale);
+		this.up.scale(scale);
+		this.forward.scale(scale);
+		//update_bounding_box();
 	}
 
-	public void update_bounding_box() {
-		aabb1.x = Math.min(-right.x - up.x, right.x - up.x);
-		aabb1.x = Math.min(aabb1.x, -right.x + up.x);
-		aabb1.x = Math.min(aabb1.x, right.x + up.x);
-		
-		aabb1.y = Math.min(-right.y - up.y, right.y - up.y);
-		aabb1.y = Math.min(aabb1.y, -right.y + up.y);
-		aabb1.y = Math.min(aabb1.y, right.y + up.y);
-		
-		aabb1.z = Math.min(-right.z - up.z, right.z - up.z);
-		aabb1.z = Math.min(aabb1.z, -right.z + up.z);
-		aabb1.z = Math.min(aabb1.z, right.z + up.z);
-		
-		aabb2.x = Math.max(-right.x - up.x, right.x - up.x);
-		aabb2.x = Math.max(aabb1.x, -right.x + up.x);
-		aabb2.x = Math.max(aabb1.x, right.x + up.x);
-		
-		aabb2.y = Math.max(-right.y - up.y, right.y - up.y);
-		aabb2.y = Math.max(aabb1.y, -right.y + up.y);
-		aabb2.y = Math.max(aabb1.y, right.y + up.y);
-		
-		aabb2.z = Math.max(-right.z - up.z, right.z - up.z);
-		aabb2.z = Math.max(aabb1.z, -right.z + up.z);
-		aabb2.z = Math.max(aabb1.z, right.z + up.z);
-	}
-	
 	public void update() {
 		//scale += 0.001f;
 		
 		//System.out.println("update");
 	}
 	
+	private Vector3f scaledVector(float r, float u) {
+		
+		return new Vector3f(right.x * r	+ up.x * u,
+				right.y * r + up.y * u,
+				right.z * r + up.z * u);
+	}
+	
 	// left up
 	public Vector3f getVertex1() {
-		return new Vector3f(-right.x + up.x,-right.y+up.y, -right.z+up.z);
+		return scaledVector(-1, 1);
 	}
 	
 	// left down
 	public Vector3f getVertex2() {
-		return new Vector3f(-right.x - up.x,-right.y-up.y, -right.z-up.z);
+		return scaledVector(-1, -1);
 	}
 	
 	// right up
 	public Vector3f getVertex3() {
-		return new Vector3f(+right.x + up.x,+right.y+up.y, +right.z+up.z);
+		return scaledVector(1, 1);
 	}
 
 	// right down
 	public Vector3f getVertex4() {
-		return new Vector3f(+right.x - up.x,+right.y-up.y, +right.z-up.z);
+		return scaledVector(1, -1);
 	}
 	
 	public boolean collide(GameObject other) {
@@ -114,7 +97,7 @@ public class GameObject {
 		GL11.glPushMatrix();
 		
 		GL11.glTranslatef(x, y, z);
-		GL11.glScalef(scale, scale, scale);
+		//GL11.glScalef(scale, scale, scale);
 		
 		/*GL11.glBegin(GL11.GL_TRIANGLES);
 			GL11.glVertex3f( 0.0f, 1.0f, -0.5f);
@@ -143,7 +126,7 @@ public class GameObject {
 		GL11.glTranslatef(ox, oy, oz);
 		
 		GL11.glTranslatef(x, y, z);
-		GL11.glScalef(scale, scale, scale);
+		//GL11.glScalef(scale, scale, scale);
 		
 		/*GL11.glBegin(GL11.GL_TRIANGLES);
 			GL11.glVertex3f( 0.0f, 1.0f, -0.5f);
@@ -164,6 +147,23 @@ public class GameObject {
 		
 		GL11.glPopMatrix();
 		
+	}
+	
+	private boolean collide(Vector3f center, float radius, float r, float u) {
+		float dx = center.x - (x + right.x * r + up.x * u);
+		float dy = center.y - (y + right.y * r + up.y * u);
+		float dz = center.z - (z + right.z * r + up.z * u);
+		return dx * dx + dy * dy + dz * dz < radius * radius;
+	}
+
+	public boolean collide_sphere(Vector3f center) {
+		for (int j = -1; j <= 1; j++) {
+			for (int i = -1; i <= 1; i++) {
+				if (collide(center, GameObject.scale / 3, i * 0.66f, j * 0.66f)) return true;
+			}
+		}
+
+		return false;
 	}
 	
 }

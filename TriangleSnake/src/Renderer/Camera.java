@@ -13,7 +13,7 @@ import org.lwjgl.util.vector.Vector4f;
 
 public class Camera {
 
-	public static final int size = 60;
+	public static final int size = 100;
 	
 	Vector3f pos;
 	Vector3f forward;
@@ -66,7 +66,7 @@ public class Camera {
 		pos.y += forward.y * distance;
 		pos.z += forward.z * distance;
 		
-		check_pitside_and_collision();
+		check_inside_and_collision();
 	}
 	 
 	//moves the camera backward relative to its current 3d orientation
@@ -74,8 +74,8 @@ public class Camera {
 		pos.x -= forward.x * distance;
 		pos.y -= forward.y * distance;
 		pos.z -= forward.z * distance;
-		
-		check_pitside_and_collision();
+
+		check_inside_and_collision();
 	}
 	
 	public void jump(float distance) {
@@ -83,7 +83,7 @@ public class Camera {
 		pos.y += up.y * distance;
 		pos.z += up.z * distance;
 		
-		check_pitside_and_collision();
+		check_inside_and_collision();
 	}
 	
 	public void move_down(float distance) {
@@ -91,7 +91,7 @@ public class Camera {
 		pos.y -= up.y * distance;
 		pos.z -= up.z * distance;
 		
-		check_pitside_and_collision();
+		check_inside_and_collision();
 	}
 	 
 	//strafes the camera left relitive to its current rotation (yaw)
@@ -100,7 +100,7 @@ public class Camera {
 		pos.y -= right.y * distance;
 		pos.z -= right.z * distance;
 		
-		check_pitside_and_collision();
+		check_inside_and_collision();
 	}
 	 
 	//strafes the camera right relitive to its current rotation (yaw)
@@ -110,7 +110,7 @@ public class Camera {
 		pos.y += right.y * distance;
 		pos.z += right.z * distance;
 		
-		check_pitside_and_collision();
+		check_inside_and_collision();
 	}
 	
 	public void apply_camera_transform() {
@@ -141,7 +141,7 @@ public class Camera {
 		
 	}
 	
-	private void check_pitside_and_collision() {
+	private void check_inside_and_collision() {
 		if (pos.x > (float)size/2.0f) {
 			pos.x = (float)-size + pos.x;
 			System.out.println("0+: " +pos.x);
@@ -171,14 +171,22 @@ public class Camera {
 		
 		// Create a temporary game object for collision checking. We create a "cross like"
 		// object out of three game objects to check against.
-		GameObject gob = new GameObject(pos.x, pos.z, pos.y, this);
-		boolean a = render.collide(gob);
+		//GameObject gob = new GameObject(pos.x, pos.y, pos.z, this);
+		//gob.setCollisionScale(1, 1);
+		boolean a = render.collide_sphere(pos);
+		
+		/*gob = new GameObject(pos.x, pos.y, pos.z, this);
+		gob.setCollisionScale(0.5f, 1);
 		gob.rotate_90_y();
 		boolean b = render.collide(gob);
+		
+		gob = new GameObject(pos.x, pos.y, pos.z, this);
+		gob.setCollisionScale(1, 0.5f);
 		gob.rotate_90_x();
-		boolean c = render.collide(gob);
-		if (a || b || c) {
+		boolean c = render.collide(gob);*/
+		if (a) {
 			System.out.println("collide");
+			render.collide_event();
 		}
 	}
 	

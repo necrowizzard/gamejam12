@@ -6,12 +6,15 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.util.vector.Vector3f;
 
 import GUI.MouseGUI;
 import Renderer.Camera;
 import Renderer.FBO;
+import Renderer.GameObject;
 import Renderer.RenderWorld;
 import Renderer.Shader;
+import Renderer.Triangles;
 
 
 public class Game {
@@ -42,6 +45,14 @@ public class Game {
 	private int post2_ind_texture, post2_ind_texture2;
 	private FBO framebuffer;
     
+	public void restart() {
+		renderer = new RenderWorld();
+		camera1 = new Camera(renderer, -10, 0, 0);
+		
+		camera2 = new Camera(renderer, 10, 0, 0);
+		started = false;
+	}
+	
 	public Game() {
 		
 		running = true;
@@ -50,10 +61,57 @@ public class Game {
 		
 		mouseGUI = new MouseGUI();
 		
-		renderer = new RenderWorld();
-		camera1 = new Camera(renderer, 0, 0, -5);
+		restart();
 		
-		camera2 = new Camera(renderer, 0, 0, 5);
+		// collision tests
+		if (Triangles.ray_intersects_triangle(new Vector3f(0, 0, 0),
+			new Vector3f(1, 0, 0), 2,
+			new Vector3f(1, 0.5f, 1),
+			new Vector3f(1, 1, 0),
+			new Vector3f(1, 0, 0))) {
+			System.out.println("ok");
+		}
+		else
+			System.out.println("fail");
+		
+		if (!Triangles.ray_intersects_triangle(new Vector3f(0, 0, 0),
+				new Vector3f(1, 0, 0), 0.5f,
+				new Vector3f(1, 0.5f, 1),
+				new Vector3f(1, 1, 0),
+				new Vector3f(1, 0, 0))) {
+				System.out.println("ok");
+			}
+			else
+				System.out.println("fail");
+		
+		Camera testcam = new Camera(renderer, 0, 0, 0);
+		GameObject o1 = new GameObject(0, 0, 0, testcam);
+		testcam.yaw(-1);
+		GameObject o2 = new GameObject(0, 0, 0, testcam);
+		if (o1.collide(o2)) {
+			System.out.println("ok");
+		}
+		else
+			System.out.println("fail");
+		
+		testcam = new Camera(renderer, 0, 0, 0);
+		o1 = new GameObject(0, 0, 0, testcam);
+		testcam.yaw(1);
+		o2 = new GameObject(0, 0, 0, testcam);
+		if (o1.collide(o2)) {
+			System.out.println("ok");
+		}
+		else
+			System.out.println("fail");
+		
+		testcam = new Camera(renderer, 0, 0, 0);
+		o1 = new GameObject(0, 0, 0, testcam);
+		o2 = new GameObject(0, 0, 0, testcam);
+		if (!o1.collide(o2)) {
+			System.out.println("ok");
+		}
+		else
+			System.out.println("fail");
 		
 		framebuffer = new FBO(RenderWorld.SIZEX, RenderWorld.SIZEY);
 		post = new Renderer.Shader("/shader/post");
@@ -65,7 +123,7 @@ public class Game {
 	}
 	
 	private void init_window() {
-		Display.setTitle("Perlin Noise");
+		Display.setTitle("Snake");
 		try {
 			Display.setFullscreen(false);
 			Display.setDisplayMode(new DisplayMode(RenderWorld.SIZEX,RenderWorld.SIZEY));
@@ -85,6 +143,10 @@ public class Game {
 			time = Sys.getTime();
 	        dt = (float)(time - lastTime)/1000.0f;
 	        lastTime = time;
+	        
+	        if (renderer.did_collide) {
+	        	restart();
+	        }
 	        
 	        //INPUT
 	        if (Mouse.isButtonDown(1)) {
@@ -117,16 +179,20 @@ public class Game {
 				
 				//if (!started) started = true;
 				//System.out.println(dt);
-				camera1.jump(movementSpeed*dt);
-	        }
+				//camera1.jump(movementSpeed*dt);
+				camera1.pitch(rotationSpeed*dt);
+			}
 	        if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-	        	camera1.move_down(movementSpeed*dt);
+	        	//camera1.move_down(movementSpeed*dt);
+	        	camera1.pitch(-rotationSpeed*dt);
 	        }
 	        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-	        	camera1.strafeLeft(movementSpeed*dt);
+	        	//camera1.strafeLeft(movementSpeed*dt);
+	        	camera1.yaw(rotationSpeed*dt);
 	        }
 	        if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-	        	camera1.strafeRight(movementSpeed*dt);
+	        	//camera1.strafeRight(movementSpeed*dt);
+	        	camera1.yaw(-rotationSpeed*dt);
 	        }
 	        
 	        if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
@@ -135,20 +201,20 @@ public class Game {
 				//System.out.println(dt);
 				//camera2.walkForward(movementSpeed*dt);
 				
-				camera2.pitch(-rotationSpeed*dt);
+				camera2.pitch(rotationSpeed*dt);
 	        }
 	        if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
 	        	//camera2.walkBackwards(movementSpeed*dt);
 	        	
-	        	camera2.pitch(rotationSpeed*dt);
+	        	camera2.pitch(-rotationSpeed*dt);
 	        }
 	        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
 	        	//camera2.strafeLeft(movementSpeed*dt);
-	        	camera2.yaw(-rotationSpeed*dt);
+	        	camera2.yaw(rotationSpeed*dt);
 	        }
 	        if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
 	        	//camera2.strafeRight(movementSpeed*dt);
-	        	camera2.yaw(rotationSpeed*dt);
+	        	camera2.yaw(-rotationSpeed*dt);
 	        }
 	        
 	        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
@@ -181,7 +247,7 @@ public class Game {
 				
 				if (started) {
 					camera1.walkForward(movementSpeed*dt);
-			        //camera2.walkForward(movementSpeed*dt);
+			        camera2.walkForward(movementSpeed*dt);
 				}
 				
 				renderer.update(dt, camera1, 0);
