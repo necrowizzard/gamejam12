@@ -69,9 +69,9 @@ public class RenderWorld {
 		
 		for (int j=0; j<640; j++) {
 			for (int i=0; i<640; i++) {
-				texture[3*(640*j+i)] = (float)Noise.noise(10.0f*(float)i/640.0f,10.0f*(float)j/640.0f,0.9f);
+				texture[3*(640*j+i)] = (float)Noise.noise(10.0f*(float)i/640.0f,10.0f*(float)j/640.0f,0.85f); //0.9
 				texture[3*(640*j+i)+1] = (float)Noise.noise(10.0f*(float)i/640.0f,10.0f*(float)j/640.0f,1.0f);
-				texture[3*(640*j+i)+2] = (float)Noise.noise(10.0f*(float)i/640.0f,10.0f*(float)j/640.0f,1.1f);
+				texture[3*(640*j+i)+2] = (float)Noise.noise(10.0f*(float)i/640.0f,10.0f*(float)j/640.0f,1.2f); //1.1
 				//cast -1/1 to 0/1
 				texture[3*(640*j+i)] = (texture[3*(640*j+i)]+1.0f)/2.0f;
 				texture[3*(640*j+i)+1] = (texture[3*(640*j+i)+1]+1.0f)/2.0f;
@@ -265,6 +265,12 @@ public class RenderWorld {
 		//SKYBOX END
 		
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+		drawBox();
+		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
 		//if (view == 0)
 		//	GL11.glColor3f(1.0f, 0.0f, 0.0f);

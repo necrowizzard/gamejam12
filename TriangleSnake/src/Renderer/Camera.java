@@ -91,25 +91,31 @@ public class Camera {
 	}
 	
 	private void check_outside_area() {
-		if (pos[0] > size/2) {
-			pos[0] = -size + pos[0];
+		if (pos[0] > (float)size/2.0f) {
+			pos[0] = (float)-size + pos[0];
+			System.out.println("0+: " +pos[0]);
 		}
-		if (pos[0] < -size/2) {
-			pos[0] = size - pos[0];
+		else if (pos[0] < -(float)size/2.0f) {
+			pos[0] = (float)size - pos[0];
+			System.out.println("0-: " +pos[0]);
 		}
 		
-		if (pos[1] > size/2) {
+		if (pos[1] > (float)size/2.0f) {
 			pos[1] = -size + pos[1];
+			System.out.println("1: " +pos[1]);
 		}
-		if (pos[1] < -size/2) {
+		else if (pos[1] < (float)-size/2.0f) {
 			pos[1] = size - pos[1];
+			System.out.println("1: " +pos[1]);
 		}
 		
-		if (pos[2] > size/2) {
+		if (pos[2] > (float)size/2.0f) {
 			pos[2] = -size + pos[2];
+			System.out.println("2: " +pos[2]);
 		}
-		if (pos[2] < -size/2) {
+		else if (pos[2] < (float)-size/2.0f) {
 			pos[2] = size - pos[2];
+			System.out.println("2: " +pos[2]);
 		}
 	}
 	
