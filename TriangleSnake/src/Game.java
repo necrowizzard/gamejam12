@@ -48,9 +48,10 @@ public class Game {
     
 	public void restart() {
 		renderer = new RenderWorld();
-		camera1 = new Camera(0, renderer, -10, 0, 0);
+		camera1 = new Camera(0, renderer, -5, 0, -5);
 		
-		camera2 = new Camera(1, renderer, 10, 0, 0);
+		camera2 = new Camera(1, renderer, 5, 0, 5);
+		camera2.yaw(180);
 		started = false;
 	}
 	

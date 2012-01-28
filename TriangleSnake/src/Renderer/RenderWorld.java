@@ -302,8 +302,8 @@ public class RenderWorld {
 		triangle.setValue1f(triangle_ind_color, 0.0f);
 		triangle.setValue1i(triangle_ind_texture, 0);
 		
-		if (camera.who == 0) triangles1.draw(camera);
-		else triangles1.draw(enemy_cam);
+		if (camera.who == 0) triangles1.draw(camera, true);
+		else triangles1.draw(enemy_cam, false);
 		
 		//if (view == 0)
 		//	GL11.glColor3f(0.0f, 1.0f, 0.0f);
@@ -312,8 +312,8 @@ public class RenderWorld {
 		
 		triangle.setValue1f(triangle_ind_color, 1.0f); //DIFFERENT COLOR
 		
-		if (camera.who == 0) triangles2.draw(enemy_cam);
-		else triangles2.draw(camera);
+		if (camera.who == 0) triangles2.draw(enemy_cam, false);
+		else triangles2.draw(camera, true);
 				
 		triangle.unbind();
 		

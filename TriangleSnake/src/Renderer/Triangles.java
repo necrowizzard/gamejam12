@@ -79,7 +79,7 @@ public class Triangles {
 		}
 	}
 	
-	public void draw(Camera player) {
+	public void draw(Camera player, boolean self) {
 		int s = Camera.size;
 			
 		for (int y = -2; y <= 2; y++) {
@@ -92,7 +92,7 @@ public class Triangles {
 					GL11.glPushMatrix();
 					GL11.glTranslatef(s * x, s * y, s * z);
 					player.apply_player_transform();
-					GL11.glScalef(0.3f, 0.3f, 0.3f);
+					if (self && x == 0 && y == 0 && z == 0) GL11.glScalef(0.3f, 0.3f, 0.3f);
 					RenderWorld.drawBox();
 					GL11.glPopMatrix();
 				}
