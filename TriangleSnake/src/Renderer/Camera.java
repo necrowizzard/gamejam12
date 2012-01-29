@@ -174,12 +174,14 @@ public class Camera {
 	}
 	
 	private void check_inside_and_collision() {
+		boolean a = render.collide_sphere(pos);
+
 		if (pos.x > (float)size/2.0f) {
 			pos.x = (float)-size + pos.x;
 			System.out.println("0+: " +pos.x);
 		}
 		else if (pos.x < -(float)size/2.0f) {
-			pos.x = (float)size - pos.x;
+			pos.x = (float)size + pos.x;
 			System.out.println("0-: " +pos.x);
 		}
 		
@@ -188,7 +190,7 @@ public class Camera {
 			System.out.println("1: " +pos.y);
 		}
 		else if (pos.y < (float)-size/2.0f) {
-			pos.y = size - pos.y;
+			pos.y = size + pos.y;
 			System.out.println("1: " +pos.y);
 		}
 		
@@ -197,7 +199,7 @@ public class Camera {
 			System.out.println("2: " +pos.z);
 		}
 		else if (pos.z < (float)-size/2.0f) {
-			pos.z = size - pos.z;
+			pos.z = size + pos.z;
 			System.out.println("2: " +pos.z);
 		}
 		
@@ -205,7 +207,9 @@ public class Camera {
 		// object out of three game objects to check against.
 		//GameObject gob = new GameObject(pos.x, pos.y, pos.z, this);
 		//gob.setCollisionScale(1, 1);
-		boolean a = render.collide_sphere(pos);
+		//Vector3f cpos = null;
+		//cpos = Vector3f.add(pos, forward, cpos);
+		boolean b = render.collide_sphere(pos);
 		
 		/*gob = new GameObject(pos.x, pos.y, pos.z, this);
 		gob.setCollisionScale(0.5f, 1);
@@ -216,7 +220,7 @@ public class Camera {
 		gob.setCollisionScale(1, 0.5f);
 		gob.rotate_90_x();
 		boolean c = render.collide(gob);*/
-		if (a) {
+		if (a || b) {
 			System.out.println("collide");
 			render.collide_event(who);
 		}

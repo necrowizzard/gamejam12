@@ -37,7 +37,7 @@ public class Triangles {
 		triangle_ind_texture = triangle.initValue1i("color_texture");
 		triangle_ind_color = triangle.initValue1f("color_parameter");
 	}
-	
+	/*
 	public boolean collide(GameObject gob) {
 		
 		for (int i=0; i<obj_list.size(); i++) {
@@ -45,7 +45,7 @@ public class Triangles {
 		}
 		
 		return false;
-	}
+	}*/
 	
 	public boolean collide_sphere(Vector3f center) {
 		

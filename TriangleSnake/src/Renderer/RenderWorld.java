@@ -365,9 +365,9 @@ public class RenderWorld {
 		
 	}
 
-	public boolean collide(GameObject gob) {
+	/*public boolean collide(GameObject gob) {
 		return triangles1.collide(gob);// | triangles2.collide(gob);
-	}
+	}*/
 	
 	public boolean collide_sphere(Vector3f center) {
 		return triangles1.collide_sphere(center) ||

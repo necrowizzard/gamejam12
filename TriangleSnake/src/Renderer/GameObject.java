@@ -6,9 +6,9 @@ import org.lwjgl.util.vector.Vector3f;
 public class GameObject {
 
 	private float x, y, z;
-	private Vector3f forward; // normal vector of the plane
-	private Vector3f up;
-	private Vector3f right;
+	private Vector3f forward, normf; // normal vector of the plane
+	private Vector3f up, normu;
+	private Vector3f right, normr;
 	static final float scale = 15; //5
 	private float current_scale;
 	
@@ -20,6 +20,7 @@ public class GameObject {
 		aabb2 = new Vector3f();
 		current_scale = 1;
 		setPos(x, y, z, cam);
+		System.out.println("new object at " + x + ", " + y + ", " + z);
 	}
 	
 	public void rotate_90_y() {
@@ -41,6 +42,9 @@ public class GameObject {
 		this.right = new Vector3f(cam.right);
 		this.up = new Vector3f(cam.up);
 		this.forward = new Vector3f(cam.forward);
+		this.normr = new Vector3f(cam.right);
+		this.normu = new Vector3f(cam.up);
+		this.normf = new Vector3f(cam.forward);
 		//this.right.scale(scale);
 		//this.up.scale(scale);
 		//this.forward.scale(scale);
@@ -49,10 +53,14 @@ public class GameObject {
 
 	public void update() {
 		if (current_scale < scale) {
-			current_scale *= 1.01f;
-			this.right.scale(1.01f);
-			this.up.scale(1.01f);
-			this.forward.scale(1.01f);
+			current_scale += 0.1f;
+			if (current_scale > scale) current_scale = scale;
+			this.right = new Vector3f(normr);
+			this.up = new Vector3f(normu);
+			this.forward = new Vector3f(normf);
+			this.right.scale(current_scale);
+			this.up.scale(current_scale);
+			this.forward.scale(current_scale);
 		}
 		
 		//System.out.println("update");
@@ -84,7 +92,7 @@ public class GameObject {
 	public Vector3f getVertex4() {
 		return scaledVector(1, -1);
 	}
-	
+	/*
 	public boolean collide(GameObject other) {
 		if (Triangles.triangle_intersects_triangle(getVertex1(), getVertex2(), getVertex3(),
 				other.getVertex1(), other.getVertex2(), other.getVertex3())) return true;
@@ -95,7 +103,7 @@ public class GameObject {
 		if (Triangles.triangle_intersects_triangle(getVertex3(), getVertex2(), getVertex4(),
 				other.getVertex3(), other.getVertex2(), other.getVertex4())) return true;
 		return false;
-	}
+	}*/
 	
 	public void draw() {
 		
@@ -162,13 +170,13 @@ public class GameObject {
 	}
 
 	public boolean collide_sphere(Vector3f center) {
-		if (current_scale < scale * 0.5) return false;
-		//if (Math.abs(center.x - x) > scale * 3) return false;
-		//if (Math.abs(center.y - y) > scale * 3) return false;
-		//if (Math.abs(center.z - z) > scale * 3) return false;
+		if (current_scale < scale * 0.7) return false;
+		if (Math.abs(center.x - x) > scale * 3) return false;
+		if (Math.abs(center.y - y) > scale * 3) return false;
+		if (Math.abs(center.z - z) > scale * 3) return false;
 		for (int j = -1; j <= 1; j++) {
 			for (int i = -1; i <= 1; i++) {
-				if (collide(center, GameObject.scale / 2, i * 0.66f, j * 0.66f)) return true;
+				if (collide(center, GameObject.scale / 2, i * 0.5f, j * 0.5f)) return true;
 			}
 		}
 

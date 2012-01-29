@@ -60,16 +60,7 @@ public class Game {
 				aspect_ratio += 0.1f;
 			}
 		}
-		
-<<<<<<< Updated upstream
-		if (who == 0) {
-			aspect_ratio += 0.1f;
-		} else if (who == 1) {
-			aspect_ratio -= 0.1f;
-		}
-		
-=======
->>>>>>> Stashed changes
+
 		renderer = new RenderWorld(aspect_ratio);
 		
 		if (aspect_ratio < 0.2f || aspect_ratio > 0.8f) {
@@ -93,56 +84,6 @@ public class Game {
 		mouseGUI = new MouseGUI();
 		
 		restart();
-		
-		// collision tests
-		if (Triangles.ray_intersects_triangle(new Vector3f(0, 0, 0),
-			new Vector3f(1, 0, 0), 2,
-			new Vector3f(1, 0.5f, 1),
-			new Vector3f(1, 1, 0),
-			new Vector3f(1, 0, 0))) {
-			System.out.println("ok");
-		}
-		else
-			System.out.println("fail");
-		
-		if (!Triangles.ray_intersects_triangle(new Vector3f(0, 0, 0),
-				new Vector3f(1, 0, 0), 0.5f,
-				new Vector3f(1, 0.5f, 1),
-				new Vector3f(1, 1, 0),
-				new Vector3f(1, 0, 0))) {
-				System.out.println("ok");
-			}
-			else
-				System.out.println("fail");
-		
-		Camera testcam = new Camera(0, renderer, 0, 0, 0);
-		GameObject o1 = new GameObject(0, 0, 0, testcam);
-		testcam.yaw(-1);
-		GameObject o2 = new GameObject(0, 0, 0, testcam);
-		if (o1.collide(o2)) {
-			System.out.println("ok");
-		}
-		else
-			System.out.println("fail");
-		
-		testcam = new Camera(0, renderer, 0, 0, 0);
-		o1 = new GameObject(0, 0, 0, testcam);
-		testcam.yaw(1);
-		o2 = new GameObject(0, 0, 0, testcam);
-		if (o1.collide(o2)) {
-			System.out.println("ok");
-		}
-		else
-			System.out.println("fail");
-		
-		testcam = new Camera(0, renderer, 0, 0, 0);
-		o1 = new GameObject(0, 0, 0, testcam);
-		o2 = new GameObject(0, 0, 0, testcam);
-		if (!o1.collide(o2)) {
-			System.out.println("ok");
-		}
-		else
-			System.out.println("fail");
 		
 		framebuffer = new FBO(RenderWorld.SIZEX, RenderWorld.SIZEY);
 		post = new Renderer.Shader("/shader/post");
