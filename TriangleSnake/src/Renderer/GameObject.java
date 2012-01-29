@@ -162,10 +162,10 @@ public class GameObject {
 	}
 
 	public boolean collide_sphere(Vector3f center) {
-		if (current_scale < scale) return false;
-		if (Math.abs(center.x - x) > scale * 2) return false;
-		if (Math.abs(center.y - y) > scale * 2) return false;
-		if (Math.abs(center.z - z) > scale * 2) return false;
+		if (current_scale < scale * 0.5) return false;
+		//if (Math.abs(center.x - x) > scale * 3) return false;
+		//if (Math.abs(center.y - y) > scale * 3) return false;
+		//if (Math.abs(center.z - z) > scale * 3) return false;
 		for (int j = -1; j <= 1; j++) {
 			for (int i = -1; i <= 1; i++) {
 				if (collide(center, GameObject.scale / 2, i * 0.66f, j * 0.66f)) return true;
