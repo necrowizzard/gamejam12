@@ -38,9 +38,9 @@ void main()
     	//gl_FragColor = smoothstep(gl_FragColor,vec4(0.3, 0.3, 0.6, 1.0), position.z/100.0);
     //}
     //2 default
-    gl_FragColor.rg *= clamp(50/position.z, 0.0, 1.0);
+    gl_FragColor.rg *= clamp(50.0/position.z, 0.0, 1.0);
     
-    if (150*color.x < position.z) discard;
+    if (150.0*color.x < position.z) discard;
     
     //gl_FragColor = vec4(position.x,position.y, position.z, 1.0);
 }
