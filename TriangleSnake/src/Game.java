@@ -25,12 +25,14 @@ public class Game {
 	
 	private RenderWorld renderer;
 	
+	float desiredFPS = 60.0f;
 	private Camera camera1, camera2;
 	float dx        = 0.0f;
     float dy        = 0.0f;
     float dt        = 0.0f; //length of frame
     double lastTime  = 0.0f; // when the last frame was
     double time      = 0.0f;
+    double nextTime = 0.0f; // next desired frame time
 	float mouseSensitivity = 0.08f;
     float movementSpeed = 10.0f; //move 10 units per second
     float rotationSpeed = 150.0f;
@@ -140,11 +142,24 @@ public class Game {
 		Mouse.setGrabbed(false);
 		
 		//game loop
+		nextTime = Sys.getTime();
 		while(running && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			
 			time = Sys.getTime();
+			
+			// Sleep in case we're faster than 60 FPS
+			if (time < nextTime) {
+				try {
+					Thread.sleep((long) (nextTime - time));
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
 	        dt = (float)(time - lastTime)/1000.0f;
 	        lastTime = time;
+	        nextTime += 1000.0f / desiredFPS;
 	        
 	        if (renderer.did_collide) {
 	        	if (time - game_over_timer > 5000) {
