@@ -55,13 +55,13 @@ public class Game {
 		if (started)
 			who = renderer.who_collided();
 		
-		renderer = new RenderWorld(aspect_ratio);
-		
 		if (who == 0) {
 			aspect_ratio += 0.1f;
 		} else if (who == 1) {
 			aspect_ratio -= 0.1f;
 		}
+		
+		renderer = new RenderWorld(aspect_ratio);
 		
 		if (aspect_ratio < 0.2f || aspect_ratio > 0.8f) {
 			System.out.println("over");

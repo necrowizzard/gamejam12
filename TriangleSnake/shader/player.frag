@@ -19,15 +19,21 @@ void main()
     //	&& color.x < 0.75) discard;
     //if ( color.x < 0.75) discard;
     
-    gl_FragColor.r *= 1.2*color_parameter;
-    gl_FragColor.g *= 0.6-color_parameter;
-    gl_FragColor.b *= 0.8-color_parameter;
+    //gl_FragColor.r *= 1.2*color_parameter;
+    //gl_FragColor.g *= 0.6-color_parameter;
+    //gl_FragColor.b *= 0.8-color_parameter;
+    
+    gl_FragColor.r *= 1.5*color_parameter;
+    gl_FragColor.g *= 0.6*(1.0-color_parameter);
+    gl_FragColor.b *= 0.8;
     
     //gl_FragColor *= vec4(0.15, 0.1, 0.1, 1.0); //dark
     
-    gl_FragColor += vec4(0.5-color_parameter*1.5, 0.5-color_parameter*1.9, 0.1, 1.0);
+    //gl_FragColor += vec4(0.5-color_parameter*1.5, 0.5-color_parameter*1.9, 0.1, 1.0);
     
-    gl_FragColor.a = 2.0 - abs(position.z/50.0);
+    gl_FragColor += vec4(0.5, 0.5, 0.1, 1.0);
+    
+    //gl_FragColor.a = 2.0 - abs(position.z/50.0);
     
     //z is positive and starts around 0
     //x colors are 0-1(0: dark)
@@ -39,6 +45,9 @@ void main()
     //}
     //2 default
     gl_FragColor.rg *= clamp(50.0/position.z, 0.0, 1.0);
+    if (color_parameter > 0.9) { //red recoloring in distance
+    	gl_FragColor.r *= 0.5*clamp(50.0/position.z, 0.0, 1.0);
+    }
     
     if (150.0*color.x < position.z) discard;
     
