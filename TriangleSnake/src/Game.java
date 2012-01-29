@@ -25,7 +25,7 @@ public class Game {
 	
 	private RenderWorld renderer;
 	
-	float desiredFPS = 60.0f;
+	float desiredFPS = 30.0f;
 	private Camera camera1, camera2;
 	float dx        = 0.0f;
     float dy        = 0.0f;
