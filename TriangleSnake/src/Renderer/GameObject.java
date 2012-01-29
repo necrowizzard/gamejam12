@@ -168,7 +168,7 @@ public class GameObject {
 		if (Math.abs(center.z - z) > scale * 2) return false;
 		for (int j = -1; j <= 1; j++) {
 			for (int i = -1; i <= 1; i++) {
-				if (collide(center, GameObject.scale / 3, i * 0.66f, j * 0.66f)) return true;
+				if (collide(center, GameObject.scale / 2, i * 0.66f, j * 0.66f)) return true;
 			}
 		}
 

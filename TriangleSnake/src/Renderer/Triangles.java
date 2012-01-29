@@ -11,6 +11,7 @@ public class Triangles {
 	public static final float TIMETOADD = 3.0f; //0.8 //1.2 //2.0
 	
 	private ArrayList<GameObject> obj_list;
+	private GameObject food;
 	
 	private float time;
 	private int counter = 0;
@@ -54,6 +55,15 @@ public class Triangles {
 		}
 		
 		return false;
+	}
+	
+	public void positionFood() {
+		if (food == null) {
+			float x = (float) (Math.random() * Camera.size);
+			float y = (float) (Math.random() * Camera.size);
+			float z = (float) (Math.random() * Camera.size);
+			food = new GameObject(x, y, z, null);
+		}
 	}
 	
 	public void update(float dt, Camera camera) {
