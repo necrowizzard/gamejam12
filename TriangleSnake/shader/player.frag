@@ -33,6 +33,8 @@ void main()
     
     gl_FragColor += vec4(0.5, 0.5, 0.1, 1.0);
     
+    //gl_FragColor *= vec4(0.5, 0.7, 0.7, 1.0);
+    
     //gl_FragColor.a = 2.0 - abs(position.z/50.0);
     
     //z is positive and starts around 0

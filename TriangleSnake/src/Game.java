@@ -53,6 +53,8 @@ public class Game {
     
 	private Textures textures;
 	
+	private boolean collide_off = false;
+	
 	public void restart() {
 		if (renderer != null) {
 			int who = renderer.who_collided();
@@ -220,6 +222,15 @@ public class Game {
 	         * 
 	         * and combinations for moving in all directions of the screen...
 	         */
+	        
+	        if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {
+				
+	        	System.out.println("Collisoon swapped");
+	        	
+				camera1.swap_collision();
+				camera2.swap_collision();
+				
+	        }
 	        
 			if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
 				

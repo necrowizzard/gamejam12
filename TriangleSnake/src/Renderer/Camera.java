@@ -24,6 +24,8 @@ public class Camera {
 	
 	RenderWorld render;
 	
+	private boolean collide_off = true;
+	
 	public Camera(int who, RenderWorld render, float start_x, float start_y, float start_z) {
 		this.who = who;
 		pos = new Vector3f(start_x, start_y, start_z);
@@ -216,10 +218,15 @@ public class Camera {
 		gob.setCollisionScale(1, 0.5f);
 		gob.rotate_90_x();
 		boolean c = render.collide(gob);*/
+		if (collide_off) return;
 		if (a) {
 			System.out.println("collide");
 			render.collide_event(who);
 		}
+	}
+	
+	public void swap_collision() {
+		collide_off = !collide_off;
 	}
 	
 }

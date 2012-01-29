@@ -37,7 +37,7 @@ public class FBO {
 		
 		System.out.println("created fbo");
 		
-		refl_res = 1;
+		refl_res = 2;
 		anti_aliasing = 1;
 		
 		IntBuffer maxsize = BufferUtils.createIntBuffer(16);
