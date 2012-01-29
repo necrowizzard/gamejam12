@@ -218,7 +218,7 @@ public class Camera {
 		boolean c = render.collide(gob);*/
 		if (a) {
 			System.out.println("collide");
-			render.collide_event();
+			render.collide_event(who);
 		}
 	}
 	

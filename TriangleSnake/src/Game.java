@@ -45,9 +45,27 @@ public class Game {
 	private Shader post2;
 	private int post2_ind_texture, post2_ind_texture2;
 	private FBO framebuffer;
+	
+	private float aspect_ratio = 0.5f;
     
 	public void restart() {
-		renderer = new RenderWorld();
+		int who = 0;
+		if (started)
+			who = renderer.who_collided();
+		
+		renderer = new RenderWorld(aspect_ratio);
+		
+		if (who == 0) {
+			aspect_ratio += 0.1f;
+		} else if (who == 1) {
+			aspect_ratio -= 0.1f;
+		}
+		
+		if (aspect_ratio < 0.2f || aspect_ratio > 0.8f) {
+			System.out.println("over");
+			System.exit(0);
+		}
+		
 		camera1 = new Camera(0, renderer, -5, 0, -5);
 		
 		camera2 = new Camera(1, renderer, 5, 0, 5);

@@ -28,8 +28,11 @@ public class RenderWorld {
 	public boolean did_collide;
 	
 	private float screen_aspect = 0.5f;
+	private int who_collided;
 	
-	public RenderWorld() {
+	public RenderWorld(float aspect) {
+		
+		screen_aspect = aspect;
 		
 		triangles1 = new Triangles();
 		triangles2 = new Triangles();
@@ -53,7 +56,10 @@ public class RenderWorld {
 	private void setup_camera(int view) {
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GLU.gluPerspective(75.0f, 4.0f/4.0f, 1.0f, 500.0f); //TODO: set aspect ratio here
+		if (view == 0)
+			GLU.gluPerspective(75.0f, 2.0f*screen_aspect, 1.0f, 500.0f); //TODO: set aspect ratio here
+		if (view == 1)
+			GLU.gluPerspective(75.0f, 1.0f/(2.0f*screen_aspect), 1.0f, 500.0f); //TODO: set aspect ratio here
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
 		if (view == 0)
@@ -159,6 +165,9 @@ public class RenderWorld {
 	
 	public void updateimage(float dt) {
 		
+		//screen_aspect -= 0.01f;
+		//if (screen_aspect < 0.1f) screen_aspect = 0.9f;
+		
 		//System.out.println("dt" + dt);
 		
 		//System.out.println(basic_animate);
@@ -186,7 +195,7 @@ public class RenderWorld {
 		if (view == 0)
 			GL11.glViewport(0, 0, (int)(Display.getDisplayMode().getWidth()*screen_aspect) -5, Display.getDisplayMode().getHeight());
 		if (view == 1)
-			GL11.glViewport((int)(Display.getDisplayMode().getWidth()*screen_aspect) + 5, 0, (int)(Display.getDisplayMode().getWidth()*screen_aspect) -5, Display.getDisplayMode().getHeight());
+			GL11.glViewport((int)(Display.getDisplayMode().getWidth()*screen_aspect) + 5, 0, (int)(Display.getDisplayMode().getWidth()*(1.0-screen_aspect)) -5, Display.getDisplayMode().getHeight());
 		
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glPushMatrix();
@@ -195,6 +204,14 @@ public class RenderWorld {
 			setup_camera(view); //lwjgl example
 			
 			if (view == 1) firstloop = false;
+		} else {
+			GL11.glMatrixMode(GL11.GL_PROJECTION);
+			GL11.glLoadIdentity();
+			if (view == 0)
+				GLU.gluPerspective(75.0f, 2.0f*screen_aspect, 1.0f, 500.0f); //TODO: set aspect ratio here
+			if (view == 1)
+				GLU.gluPerspective(75.0f, 1.0f/(2.0f*screen_aspect), 1.0f, 500.0f); //TODO: set aspect ratio here
+			GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		}
 		
 		int err = GL11.glGetError();
@@ -360,6 +377,21 @@ public class RenderWorld {
 	public void collide_event(int who) {
 		did_collide = true;
 		
+		who_collided = who;
+		
+		System.out.println(who);
+		
+		/*if (who == 0) {
+			screen_aspect -= 0.1f;
+		} else {
+			screen_aspect += 0.1f;
+		}
+		
+		if (screen_aspect < 0.2f || screen_aspect > 0.8f) System.out.println("over");*/
+	}
+	
+	public int who_collided() {
+		return who_collided;
 	}
 	
 }
