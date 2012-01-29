@@ -24,6 +24,10 @@ void main()
 {
 
 	//position *= sin(animate);
+	
+	//animate = sin(animate);
+	
+	animate = animate*0.4;
 
 	//problem without +0.001 (looks like z fighting, but isnt)
     //gl_FragColor = vec4(mod(position.x+0.001, 10.0)/10.0, mod(position.y+0.001, 10.0)/10.0, mod(position.z+0.001, 10.0)/10.0, 1.0);
@@ -35,15 +39,17 @@ void main()
     
     //color *= 0.8;
     
-    gl_FragColor = vec4(gl_FragColor.r,1.1-color,1.2-color,1.0);
+    gl_FragColor = vec4(gl_FragColor.r,1.1-color,1.2-color,1.0); //gl_FragColor.r,1.1-color,1.2-color
     
     //0.12, 0.12, 0.15
     //vec4(0.5, 0.1, 0.1, 1.0)
-    gl_FragColor = 1.0/gl_FragColor * vec4(0.05, 0.05, 0.8, 1.0); //0.1, 0.1, 0.1
+    gl_FragColor = 1.0/gl_FragColor * vec4(0.05, 0.05, 0.25, 1.0); //0.1, 0.1, 0.1 //0.05, 0.05, 0.8
     
     //gl_FragColor = gl_FragColor * vec4(0.3, 0.3, 0.3, 1.0);
     
-    //gl_FragColor = gl_FragColor * vec4(1.5, 1.5, 1.5, 1.0);
+    gl_FragColor = gl_FragColor * vec4(1.2, 1.2, 1.2, 1.0);
+    
+    //gl_FragColor *= animate;
     
     //gl_FragColor *= 0.01;
     

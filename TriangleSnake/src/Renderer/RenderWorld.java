@@ -17,10 +17,7 @@ public class RenderWorld {
 	private Shader basic;
 	private float basic_animate = 0.0f;
 	private int basic_ind_animate, basic_ind_texture;
-	private float basic_animate_d = 1.0f;
-	private Shader triangle;
-	private int triangle_ind_texture;
-	private int triangle_ind_color;
+	private float basic_animate_d = 10.0f;
 	
 	private Textures textures;
 	private Triangles triangles1, triangles2;
@@ -43,12 +40,10 @@ public class RenderWorld {
 		basic_ind_animate = basic.initValue1f("animate");
 		basic_ind_texture = basic.initValue1i("color_texture");
 		
-		triangle = new Shader("/shader/triangle");
-		triangle_ind_texture = triangle.initValue1i("color_texture");
-		triangle_ind_color = triangle.initValue1f("color_parameter");
-		
 		sun = new Sphere();
 		//sun.draw(50);
+		
+		basic_animate = 0.0f;
 		
 		createSkyboxTexture();
 	}
@@ -92,7 +87,7 @@ public class RenderWorld {
 				
 				//texture[3*(640*j+i)] = texture[3*(640*j+i)]-(int)texture[3*(640*j+i)];
 				//texture[3*(640*j+i)+1] = texture[3*(640*j+i)+1]-(int)texture[3*(640*j+i)+1];
-				//texture[3*(640*j+i)+2] = texture[3*(640*j+i)+2]-(int)texture[3*(640*j+i)+2];
+				texture[3*(640*j+i)+2] = texture[3*(640*j+i)+2]-(int)texture[3*(640*j+i)+2];
 				
 				//texture[3*(640*j+i)] = (float)Math.cos((float)(10.0f*(float)i/640.0f) + texture[3*(640*j+i)]);
 				texture[3*(640*j+i)+1] = (float)Math.cos((float)(10.0f*(float)i/640.0f) + texture[3*(640*j+i)]+1);
@@ -160,13 +155,22 @@ public class RenderWorld {
 		
 	}
 	
-	public void update(float dt, Camera camera, int view) {
+	public void updateimage(float dt) {
+		
+		//System.out.println("dt" + dt);
+		
+		//System.out.println(basic_animate);
 		
 		basic_animate += dt/10.0f * basic_animate_d;
 		if (basic_animate > 1.0f || basic_animate < 0.0f) {
 			basic_animate_d *= - 1.0f;
 		}
 		
+		//System.out.println(basic_animate);
+		
+	}
+	
+	public void update(float dt, Camera camera, int view) {
 		
 		if (view == 0)
 			triangles1.update(dt, camera);
@@ -297,25 +301,27 @@ public class RenderWorld {
 		//if (view == 1)
 		//	GL11.glColor3f(0.8f, 0.0f, 0.0f);
 		
-		textures.bind_texture(1);
-		triangle.bind();
-		triangle.setValue1f(triangle_ind_color, 0.0f);
-		triangle.setValue1i(triangle_ind_texture, 0);
+		//GL11.glEnable(GL11.GL_BLEND);
+		//GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ZERO);
 		
-		if (camera.who == 0) triangles1.draw(camera, true);
-		else triangles1.draw(enemy_cam, false);
+		textures.bind_texture(1);
+		
+		
+		if (camera.who == 0) triangles1.draw(camera, true, 0.0f);
+		else triangles1.draw(enemy_cam, false, 0.0f);
 		
 		//if (view == 0)
 		//	GL11.glColor3f(0.0f, 1.0f, 0.0f);
 		//if (view == 1)
 		//	GL11.glColor3f(0.0f, 0.8f, 0.0f);
 		
-		triangle.setValue1f(triangle_ind_color, 1.0f); //DIFFERENT COLOR
+		//GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_SRC_COLOR);
+		//triangle.setValue1f(triangle_ind_color, 1.0f); //DIFFERENT COLOR
 		
-		if (camera.who == 0) triangles2.draw(enemy_cam, false);
-		else triangles2.draw(camera, true);
-				
-		triangle.unbind();
+		if (camera.who == 0) triangles2.draw(enemy_cam, false, 1.0f);
+		else triangles2.draw(camera, true, 1.0f);
+		
+		//GL11.glDisable(GL11.GL_BLEND);
 		
 		//GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 		//GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);

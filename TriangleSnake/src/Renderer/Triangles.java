@@ -8,12 +8,19 @@ import org.lwjgl.util.vector.Vector3f;
 public class Triangles {
 
 	public static final int LIMIT = 300;
-	public static final float TIMETOADD = 1.2f; //0.8
+	public static final float TIMETOADD = 3.0f; //0.8 //1.2 //2.0
 	
 	private ArrayList<GameObject> obj_list;
 	
 	private float time;
 	private int counter = 0;
+	
+	private Shader player_shader;
+	private int player_shader_ind_texture, player_shader_ind_color;
+	
+	private Shader triangle;
+	private int triangle_ind_texture;
+	private int triangle_ind_color;
 	
 	public Triangles () {
 		
@@ -21,6 +28,13 @@ public class Triangles {
 		
 		//obj_list.add(new GameObject(0, 0, 0));
 		
+		player_shader = new Shader("/shader/player");
+		player_shader_ind_texture = player_shader.initValue1i("color_texture");
+		player_shader_ind_color = player_shader.initValue1f("color_parameter");
+		
+		triangle = new Shader("/shader/triangle");
+		triangle_ind_texture = triangle.initValue1i("color_texture");
+		triangle_ind_color = triangle.initValue1f("color_parameter");
 	}
 	
 	public boolean collide(GameObject gob) {
@@ -79,23 +93,43 @@ public class Triangles {
 		}
 	}
 	
-	public void draw(Camera player, boolean self) {
+	public void draw(Camera player, boolean self, float color) {
 		int s = Camera.size;
 			
 		for (int y = -2; y <= 2; y++) {
 			for (int x = -2; x <= 2; x++) {
 				for (int z = -2; z <= 2; z++) {
+					
+					triangle.bind();
+					triangle.setValue1f(triangle_ind_color, color);
+					triangle.setValue1i(triangle_ind_texture, 0);
+					
 					for (int i=0; i<obj_list.size(); i++) {
 						obj_list.get(i).draw_offset(s * x, s * y, s * z);
 					}
+					
+					triangle.unbind();
+					
 					//TODO: needs to be either removed or drawn different (seemed confusing) 
 					// test: draw player
-					/*GL11.glPushMatrix();
+					GL11.glPushMatrix();
 					GL11.glTranslatef(s * x, s * y, s * z);
 					player.apply_player_transform();
-					if (self && x == 0 && y == 0 && z == 0) GL11.glScalef(0.3f, 0.3f, 0.3f);
-					RenderWorld.drawBox();
-					GL11.glPopMatrix();*/
+					if (!self){//&& x == 0 && y == 0 && z == 0
+						GL11.glScalef(1.5f, 1.5f, 1.5f);
+						
+						player_shader.bind();
+						player_shader.setValue1f(player_shader_ind_color, color);
+						player_shader.setValue1i(player_shader_ind_texture, 0);
+						RenderWorld.drawBox();
+						
+						GL11.glScalef(0.95f, 0.95f, 0.95f);
+						player_shader.setValue1f(player_shader_ind_color, 0.5f);
+						RenderWorld.drawBox();
+						player_shader.unbind();
+					}
+					
+					GL11.glPopMatrix();
 				}
 			}
 			

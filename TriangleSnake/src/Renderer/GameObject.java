@@ -9,7 +9,7 @@ public class GameObject {
 	private Vector3f forward; // normal vector of the plane
 	private Vector3f up;
 	private Vector3f right;
-	static final float scale = 7; //5
+	static final float scale = 15; //5
 	private float current_scale;
 	
 	// axis aligned bounding box

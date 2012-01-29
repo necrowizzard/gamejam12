@@ -258,7 +258,10 @@ public class Game {
 			        camera2.walkForward(movementSpeed*dt);
 				}
 				
+				//System.out.println("dt" + dt);
 				if (started) {
+					renderer.updateimage(dt);
+					
 					renderer.update(dt, camera1, 0);
 					renderer.update(dt, camera2, 1);
 				}

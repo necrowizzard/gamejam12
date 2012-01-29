@@ -122,7 +122,7 @@ public class Camera {
 		FloatBuffer buffer = bytes.asFloatBuffer();
 		
 		GL11.glLoadIdentity();
-		GL11.glTranslatef(0, 0, -4);
+		//GL11.glTranslatef(0, 0, -4);
 		
 		buffer.put(right.x);
 		buffer.put(up.x);
