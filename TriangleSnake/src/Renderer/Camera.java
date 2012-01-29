@@ -78,7 +78,7 @@ public class Camera {
 		pos.y -= forward.y * distance;
 		pos.z -= forward.z * distance;
 
-		check_inside_and_collision();
+		//check_inside_and_collision();
 	}
 	
 	public void jump(float distance) {
@@ -86,7 +86,7 @@ public class Camera {
 		pos.y += up.y * distance;
 		pos.z += up.z * distance;
 		
-		check_inside_and_collision();
+		//check_inside_and_collision();
 	}
 	
 	public void move_down(float distance) {
@@ -94,7 +94,7 @@ public class Camera {
 		pos.y -= up.y * distance;
 		pos.z -= up.z * distance;
 		
-		check_inside_and_collision();
+		//check_inside_and_collision();
 	}
 	 
 	//strafes the camera left relitive to its current rotation (yaw)
@@ -103,7 +103,7 @@ public class Camera {
 		pos.y -= right.y * distance;
 		pos.z -= right.z * distance;
 		
-		check_inside_and_collision();
+		//check_inside_and_collision();
 	}
 	 
 	//strafes the camera right relitive to its current rotation (yaw)
@@ -113,7 +113,7 @@ public class Camera {
 		pos.y += right.y * distance;
 		pos.z += right.z * distance;
 		
-		check_inside_and_collision();
+		//check_inside_and_collision();
 	}
 	
 	public void apply_camera_transform() {

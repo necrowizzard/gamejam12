@@ -61,15 +61,6 @@ public class Game {
 			}
 		}
 		
-<<<<<<< Updated upstream
-		if (who == 0) {
-			aspect_ratio += 0.1f;
-		} else if (who == 1) {
-			aspect_ratio -= 0.1f;
-		}
-		
-=======
->>>>>>> Stashed changes
 		renderer = new RenderWorld(aspect_ratio);
 		
 		if (aspect_ratio < 0.2f || aspect_ratio > 0.8f) {

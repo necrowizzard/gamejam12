@@ -51,6 +51,8 @@ void main()
     	gl_FragColor.r *= 0.5*clamp(50.0/position.z, 0.0, 1.0);
     }
     
+    gl_FragColor.rgb *= clamp(150.0/position.z, 0.0, 1.0);
+    
     if (150.0*color.x < position.z) discard;
     
     //gl_FragColor = vec4(position.x,position.y, position.z, 1.0);
