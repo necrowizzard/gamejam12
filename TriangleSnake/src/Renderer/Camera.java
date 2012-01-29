@@ -24,7 +24,7 @@ public class Camera {
 	
 	RenderWorld render;
 	
-	private boolean collide_off = true;
+	private boolean collide_off = false;
 	
 	public Camera(int who, RenderWorld render, float start_x, float start_y, float start_z) {
 		this.who = who;
