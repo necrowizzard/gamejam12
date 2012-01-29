@@ -11,8 +11,8 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class RenderWorld {
 
-	public static final int SIZEX = 1200;
-	public static final int SIZEY = 600;
+	public static final int SIZEX = 1440;
+	public static final int SIZEY = 720;
 	
 	private Shader basic;
 	private float basic_animate = 0.0f;
