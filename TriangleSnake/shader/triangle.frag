@@ -24,7 +24,7 @@ void main()
     //gl_FragColor.b *= 0.55-color_parameter;
     
     //OLD
-    gl_FragColor.r *= 1.5*color_parameter;
+    gl_FragColor.r *= 1.4*color_parameter;
     gl_FragColor.g *= 0.6*(1.0-color_parameter);
     gl_FragColor.b *= 0.8;
     
