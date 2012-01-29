@@ -88,13 +88,14 @@ public class Triangles {
 					for (int i=0; i<obj_list.size(); i++) {
 						obj_list.get(i).draw_offset(s * x, s * y, s * z);
 					}
+					//TODO: needs to be either removed or drawn different (seemed confusing) 
 					// test: draw player
-					GL11.glPushMatrix();
+					/*GL11.glPushMatrix();
 					GL11.glTranslatef(s * x, s * y, s * z);
 					player.apply_player_transform();
 					if (self && x == 0 && y == 0 && z == 0) GL11.glScalef(0.3f, 0.3f, 0.3f);
 					RenderWorld.drawBox();
-					GL11.glPopMatrix();
+					GL11.glPopMatrix();*/
 				}
 			}
 			
