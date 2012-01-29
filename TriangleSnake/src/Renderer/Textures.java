@@ -25,12 +25,12 @@ public class Textures {
 		textures = BufferUtils.createIntBuffer(3);
 		GL11.glGenTextures(textures);
 		
-		texture_list = new ArrayList<Texture>();
+		/*texture_list = new ArrayList<Texture>();
 		try {
 			texture_list.add(TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("img/start.png")));
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 
 	}
 	

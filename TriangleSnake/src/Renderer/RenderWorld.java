@@ -30,14 +30,15 @@ public class RenderWorld {
 	private float screen_aspect = 0.5f;
 	private int who_collided;
 	
-	public RenderWorld(float aspect) {
+	public RenderWorld(float aspect, Textures textures) {
 		
+		this.textures = textures;
 		screen_aspect = aspect;
 		
 		triangles1 = new Triangles();
 		triangles2 = new Triangles();
 		
-		textures = new Textures();
+		//textures = new Textures();
 		//debug!
 		//textures.add_Texture(null, 32, 32);
 		
@@ -366,51 +367,7 @@ public class RenderWorld {
 		GL11.glPopMatrix();
 		
 		//GL11.glCl
-		/*GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		
-		GL11.glPushMatrix();
-			GL11.glMatrixMode(GL11.GL_MODELVIEW);
-			GL11.glLoadIdentity();
-			
-			GL11.glMatrixMode(GL11.GL_PROJECTION);
-			
-			GL11.glPushMatrix();
-			
-				GL11.glLoadIdentity();
-				
-				//text.draw_string("Blablabla", -0.96f, 0.85f, 0.7f);
-				
-				textures.bind_texture(2);
-				
-				GL11.glBegin(GL11.GL_QUADS);
-
-				GL11.glTexCoord2f(0.0f, 1.0f);
-				GL11.glVertex3f(-1.0f, 1.0f, -1.0f);
-
-				GL11.glTexCoord2f(0.0f, 0.0f);
-				GL11.glVertex3f(-1.0f, -1.0f, -1.0f);
-
-				GL11.glTexCoord2f(1.0f, 0.0f);
-				GL11.glVertex3f(1.0f, -1.0f, -1.0f);
-
-				GL11.glTexCoord2f(1.0f, 1.0f);
-				GL11.glVertex3f(1.0f, 1.0f, -1.0f);
-
-				GL11.glEnd();
-				
-			
-			GL11.glPopMatrix();
-			GL11.glMatrixMode(GL11.GL_MODELVIEW);
-			
-		GL11.glPopMatrix();
-		
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_BLEND);*/
 		
 	}
 
