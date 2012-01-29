@@ -357,7 +357,7 @@ public class RenderWorld {
 				triangles2.collide_sphere(center);
 	}
 
-	public void collide_event() {
+	public void collide_event(int who) {
 		did_collide = true;
 		
 	}
