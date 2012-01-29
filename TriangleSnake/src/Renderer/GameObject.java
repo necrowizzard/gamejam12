@@ -6,10 +6,12 @@ import org.lwjgl.util.vector.Vector3f;
 public class GameObject {
 
 	private float x, y, z;
+
 	private Vector3f forward, normf; // normal vector of the plane
 	private Vector3f up, normu;
 	private Vector3f right, normr;
-	static final float scale = 15; //5
+	static final float scale = 11; //5
+
 	private float current_scale;
 	
 	// axis aligned bounding box

@@ -14,6 +14,7 @@ import Renderer.FBO;
 import Renderer.GameObject;
 import Renderer.RenderWorld;
 import Renderer.Shader;
+import Renderer.Textures;
 import Renderer.Triangles;
 
 
@@ -50,6 +51,10 @@ public class Game {
 	
 	private float aspect_ratio = 0.5f;
     
+	private Textures textures;
+	
+	private boolean collide_off = false;
+	
 	public void restart() {
 		if (renderer != null) {
 			int who = renderer.who_collided();
@@ -61,7 +66,9 @@ public class Game {
 			}
 		}
 
-		renderer = new RenderWorld(aspect_ratio);
+		textures = new Textures();
+		
+		renderer = new RenderWorld(aspect_ratio, textures);
 		
 		if (aspect_ratio < 0.2f || aspect_ratio > 0.8f) {
 			System.out.println("over");
@@ -165,6 +172,15 @@ public class Game {
 	         * 
 	         * and combinations for moving in all directions of the screen...
 	         */
+	        
+	        if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {
+				
+	        	System.out.println("Collisoon swapped");
+	        	
+				camera1.swap_collision();
+				camera2.swap_collision();
+				
+	        }
 	        
 			if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
 				
@@ -384,7 +400,58 @@ public class Game {
 		post2.unbind();
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		
+		
+		/*GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		
+		GL11.glPushMatrix();
+			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+			GL11.glLoadIdentity();
+			
+			GL11.glMatrixMode(GL11.GL_PROJECTION);
+			
+			GL11.glPushMatrix();
+			
+				GL11.glLoadIdentity();
+				
+				//GL11.glDisable(GL11.GL_TEXTURE_2D);
+				
+				//text.draw_string("Blablabla", -0.96f, 0.85f, 0.7f);
+				GL13.glActiveTexture(GL13.GL_TEXTURE0);
+				textures.bind_texture(2);
+				
+				GL11.glBegin(GL11.GL_QUADS);
+				
+				GL11.glColor3f(1.0f, 1.0f, 0.0f);
+				
+				GL11.glTexCoord2f(0.0f, 1.0f);
+				GL11.glVertex3f(-1.0f, 1.0f, -1.0f);
+
+				GL11.glTexCoord2f(0.0f, 0.0f);
+				GL11.glVertex3f(-1.0f, -1.0f, -1.0f);
+
+				GL11.glTexCoord2f(1.0f, 0.0f);
+				GL11.glVertex3f(1.0f, -1.0f, -1.0f);
+
+				GL11.glTexCoord2f(1.0f, 1.0f);
+				GL11.glVertex3f(1.0f, 1.0f, -1.0f);
+
+				GL11.glEnd();
+				
+			
+			GL11.glPopMatrix();
+			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+			
+		GL11.glPopMatrix();
+		
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_BLEND);
+		
+		
+		GL11.glDisable(GL11.GL_TEXTURE_2D);*/
 	}
 	
 	public void stop() {

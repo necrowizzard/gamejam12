@@ -1,22 +1,37 @@
 package Renderer;
 
+import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
+import org.newdawn.slick.util.ResourceLoader;
+
 public class Textures {
 
-	private int current_index;
+	//private int current_index;
 	private IntBuffer textures;
+	private ArrayList<Texture> texture_list;
 	
 	public Textures() {
 		
-		textures = BufferUtils.createIntBuffer(2);
+		textures = BufferUtils.createIntBuffer(3);
 		GL11.glGenTextures(textures);
+		
+		/*texture_list = new ArrayList<Texture>();
+		try {
+			texture_list.add(TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("img/start.png")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}*/
+
 	}
 	
 	public int add_Texture(String name) {
@@ -47,7 +62,12 @@ public class Textures {
 	}
 	
 	public void bind_texture(int index) {
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textures.get(index));
+		if (index != 2) {
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, textures.get(index));
+		} else {
+			texture_list.get(0).bind();
+		}
+		
 	}
 	
 }

@@ -24,6 +24,8 @@ public class Camera {
 	
 	RenderWorld render;
 	
+	private boolean collide_off = true;
+	
 	public Camera(int who, RenderWorld render, float start_x, float start_y, float start_z) {
 		this.who = who;
 		pos = new Vector3f(start_x, start_y, start_z);
@@ -78,7 +80,7 @@ public class Camera {
 		pos.y -= forward.y * distance;
 		pos.z -= forward.z * distance;
 
-		check_inside_and_collision();
+		//check_inside_and_collision();
 	}
 	
 	public void jump(float distance) {
@@ -86,7 +88,7 @@ public class Camera {
 		pos.y += up.y * distance;
 		pos.z += up.z * distance;
 		
-		check_inside_and_collision();
+		//check_inside_and_collision();
 	}
 	
 	public void move_down(float distance) {
@@ -94,7 +96,7 @@ public class Camera {
 		pos.y -= up.y * distance;
 		pos.z -= up.z * distance;
 		
-		check_inside_and_collision();
+		//check_inside_and_collision();
 	}
 	 
 	//strafes the camera left relitive to its current rotation (yaw)
@@ -103,7 +105,7 @@ public class Camera {
 		pos.y -= right.y * distance;
 		pos.z -= right.z * distance;
 		
-		check_inside_and_collision();
+		//check_inside_and_collision();
 	}
 	 
 	//strafes the camera right relitive to its current rotation (yaw)
@@ -113,7 +115,7 @@ public class Camera {
 		pos.y += right.y * distance;
 		pos.z += right.z * distance;
 		
-		check_inside_and_collision();
+		//check_inside_and_collision();
 	}
 	
 	public void apply_camera_transform() {
@@ -229,10 +231,17 @@ public class Camera {
 		gob.setCollisionScale(1, 0.5f);
 		gob.rotate_90_x();
 		boolean c = render.collide(gob);*/
+
+		if (collide_off) return;
 		if (a || b) {
+
 			System.out.println("collide");
 			render.collide_event(who);
 		}
+	}
+	
+	public void swap_collision() {
+		collide_off = !collide_off;
 	}
 	
 }

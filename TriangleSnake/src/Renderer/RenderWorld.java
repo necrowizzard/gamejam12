@@ -30,14 +30,15 @@ public class RenderWorld {
 	private float screen_aspect = 0.5f;
 	private int who_collided;
 	
-	public RenderWorld(float aspect) {
+	public RenderWorld(float aspect, Textures textures) {
 		
+		this.textures = textures;
 		screen_aspect = aspect;
 		
 		triangles1 = new Triangles();
 		triangles2 = new Triangles();
 		
-		textures = new Textures();
+		//textures = new Textures();
 		//debug!
 		//textures.add_Texture(null, 32, 32);
 		
@@ -60,6 +61,7 @@ public class RenderWorld {
 			GLU.gluPerspective(75.0f, 2.0f*screen_aspect, 1.0f, 500.0f); //TODO: set aspect ratio here
 		if (view == 1)
 			GLU.gluPerspective(75.0f, 1.0f/(2.0f*screen_aspect), 1.0f, 500.0f); //TODO: set aspect ratio here
+		
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
 		if (view == 0)
@@ -212,6 +214,7 @@ public class RenderWorld {
 			if (view == 1)
 				GLU.gluPerspective(75.0f, 1.0f/(2.0f*screen_aspect), 1.0f, 500.0f); //TODO: set aspect ratio here
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+			
 		}
 		
 		int err = GL11.glGetError();
@@ -362,6 +365,9 @@ public class RenderWorld {
 		GL11.glPopMatrix();
 		
 		GL11.glPopMatrix();
+		
+		//GL11.glCl
+		
 		
 	}
 
