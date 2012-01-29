@@ -175,32 +175,39 @@ public class Camera {
 	
 	private void check_inside_and_collision() {
 		boolean a = render.collide_sphere(pos);
+		boolean check = false;
 
 		if (pos.x > (float)size/2.0f) {
 			pos.x = (float)-size + pos.x;
 			System.out.println("0+: " +pos.x);
+			check = true;
 		}
 		else if (pos.x < -(float)size/2.0f) {
 			pos.x = (float)size + pos.x;
 			System.out.println("0-: " +pos.x);
+			check = true;
 		}
 		
 		if (pos.y > (float)size/2.0f) {
 			pos.y = -size + pos.y;
 			System.out.println("1: " +pos.y);
+			check = true;
 		}
 		else if (pos.y < (float)-size/2.0f) {
 			pos.y = size + pos.y;
 			System.out.println("1: " +pos.y);
+			check = true;
 		}
 		
 		if (pos.z > (float)size/2.0f) {
 			pos.z = -size + pos.z;
 			System.out.println("2: " +pos.z);
+			check = true;
 		}
 		else if (pos.z < (float)-size/2.0f) {
 			pos.z = size + pos.z;
 			System.out.println("2: " +pos.z);
+			check = true;
 		}
 		
 		// Create a temporary game object for collision checking. We create a "cross like"
@@ -209,7 +216,9 @@ public class Camera {
 		//gob.setCollisionScale(1, 1);
 		//Vector3f cpos = null;
 		//cpos = Vector3f.add(pos, forward, cpos);
-		boolean b = render.collide_sphere(pos);
+		boolean b = false;
+		if (check)
+			b = render.collide_sphere(pos);
 		
 		/*gob = new GameObject(pos.x, pos.y, pos.z, this);
 		gob.setCollisionScale(0.5f, 1);
