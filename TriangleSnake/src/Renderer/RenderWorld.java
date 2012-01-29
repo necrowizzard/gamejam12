@@ -27,6 +27,8 @@ public class RenderWorld {
 	private Sphere sun;
 	public boolean did_collide;
 	
+	private float screen_aspect = 0.5f;
+	
 	public RenderWorld() {
 		
 		triangles1 = new Triangles();
@@ -182,9 +184,9 @@ public class RenderWorld {
 	public void draw(int view, Camera camera, Camera enemy_cam) {
 		
 		if (view == 0)
-			GL11.glViewport(0, 0, Display.getDisplayMode().getWidth()/2 -5, Display.getDisplayMode().getHeight());
+			GL11.glViewport(0, 0, (int)(Display.getDisplayMode().getWidth()*screen_aspect) -5, Display.getDisplayMode().getHeight());
 		if (view == 1)
-			GL11.glViewport(Display.getDisplayMode().getWidth()/2 + 5, 0, Display.getDisplayMode().getWidth()/2 -5, Display.getDisplayMode().getHeight());
+			GL11.glViewport((int)(Display.getDisplayMode().getWidth()*screen_aspect) + 5, 0, (int)(Display.getDisplayMode().getWidth()*screen_aspect) -5, Display.getDisplayMode().getHeight());
 		
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glPushMatrix();
